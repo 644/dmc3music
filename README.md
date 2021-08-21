@@ -1,22 +1,13 @@
-NAudio.Vorbis    [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/naudio/Vorbis?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
--------
+# DMC3 Music
+Play DMC3's music for the 2006 port without causing frame drops or lag
 
-NAudio.Vorbis is a convenience wrapper to enable easy integration of [NVorbis](https://github.com/ioctlLR/NVorbis) into NAudio projects.
+## How to
+First, [click here to download](https://github.com/644/dmc3music/releases/download/v1.0/dmc3music.zip)
 
-To use:
+Then unzip, start the game and click "play music".
 
-```cs
-// add a reference to NVorbis.dll
-// add a reference to NAudio.Vorbis.dll
+It should automatically play random battle themes when you encounter enemies, and the correct boss battle themes for each boss (some may be wrong).
 
-using (var vorbisStream = new NAudio.Vorbis.VorbisWaveReader("path/to/file.ogg"))
-using (var waveOut = new NAudio.Wave.WaveOutEvent())
-{
-    waveOut.Init(vorbisStream);
-    waveOut.Play();
-   
-    // wait here until playback stops or should stop
-}
-```
+Make sure to disable the sound driver in style switcher otherwise you'll have multiple tracks playing.
 
-If you have any questions or comments, feel free to join us on Gitter.  If you have any issues or feature requests, please submit them in the issue tracker.
+I plan to add more features in the future, like customizing tracks for each room/mission, adding your own tracks, and selecting the correct tracks for each room.
