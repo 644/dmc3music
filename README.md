@@ -8,4 +8,6 @@ It should automatically play random battle themes when you encounter enemies, an
 
 Make sure to disable the sound driver in style switcher otherwise you'll have multiple tracks playing.
 
+Quick tutorial: https://www.youtube.com/watch?v=lcjveZsfgxE
+
 I plan to add more features in the future, like customizing tracks for each room/mission, adding your own tracks, and selecting the correct tracks for each room.
