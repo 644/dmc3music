@@ -3,7 +3,6 @@ using NAudio.Wave;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
-using System.Collections;
 
 namespace dmc3music
 {
@@ -38,7 +37,14 @@ namespace dmc3music
 
         private void button1_Click(object sender, EventArgs e)
         {
-            DMC3Process = Process.GetProcessesByName("dmc3se")[0];
+            try
+            {
+                DMC3Process = Process.GetProcessesByName("dmc3se")[0];
+            } catch
+            {
+                MessageBox.Show("pls start game first", "dmc3se.exe not found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             ProcessHandle = OpenProcess(PROCESS_WM_READ, false, DMC3Process.Id);
             BaseAddress = DMC3Process.MainModule.BaseAddress.ToInt32();
             SongChangeTimer = new Timer();
@@ -64,8 +70,14 @@ namespace dmc3music
             }
 
             int roomId = -1;
+            int enemyCount = -1;
+            int enemyCountPtr1 = -1;
+            int enemyCountPtr2 = -1;
             ReadProcessMemory(ProcessHandle, BaseAddress + 0x76B150, ref roomId, sizeof(int), 0);
-            Player.PlayRoomSong(roomId);
+            ReadProcessMemory(ProcessHandle, BaseAddress + 0x76B860 + 0xC40 + 0x8, ref enemyCountPtr1, sizeof(int), 0);
+            ReadProcessMemory(ProcessHandle, enemyCountPtr1 + 0x18, ref enemyCountPtr2, sizeof(int), 0);
+            ReadProcessMemory(ProcessHandle, enemyCountPtr2 + 0xA78, ref enemyCount, sizeof(int), 0);
+            Player.PlayRoomSong(roomId, enemyCount);
         }
     }
 }
