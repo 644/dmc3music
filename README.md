@@ -1,7 +1,5 @@
 # DMC3 Music
-Play DMC3's music for the 2006 port without causing frame drops or lag
-
-## How to
+### How to setup
 First, [click here to download](https://github.com/644/dmc3music/releases/download/v1.0/dmc3music.zip)
 
 Then unzip, start the game and click "play music".
