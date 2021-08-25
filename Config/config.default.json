@@ -1,0 +1,21 @@
+﻿{
+	"MusicPath": "tracks",
+	"RoomTracks": {},
+	"TrackRemapping": {},
+	"Shuffle": false,
+	"ShuffleRotation": [
+		"Battle_00.ogg",
+		"Battle_0a.ogg",
+		"Battle_01.ogg",
+		"Battle_02.ogg",
+		"Battle_03.ogg",
+		"Battle_04.ogg",
+		"Battle_05.ogg",
+		"Battle_06.ogg",
+		"Battle_07.ogg",
+		"Battle_08.ogg",
+		"Jikushinzou.ogg",
+		"Staffroll.ogg",
+		"TGS.ogg"
+	]
+}

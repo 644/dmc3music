@@ -16,6 +16,8 @@ namespace dmc3music
         [DllImport("kernel32", SetLastError = true)]
         public static extern int ReadProcessMemory(IntPtr hProcess, int lpBase, ref int lpBuffer, int nSize, int lpNumberOfBytesRead);
 
+        private DMC3MusicConfig Config { get; set; }
+
         private Timer SongChangeTimer { get; set; }
 
         private SongPlayer Player { get; set; }
@@ -24,19 +26,32 @@ namespace dmc3music
         private IntPtr ProcessHandle { get; set; }
         private int BaseAddress { get; set; }
 
+        private bool ConfigChanged { get; set; }
+
         public Form1()
         {
             InitializeComponent();
-            Player = new SongPlayer();
+            Config = DMC3MusicConfigWriter.ReadConfig();
+            Player = new SongPlayer(Config);
+            SongChangeTimer = new Timer();
+            ConfigChanged = false;
         }
 
-        public static class Globals
+        #region Form Control Methods
+
+        private void Form1_Load(object sender, EventArgs e)
         {
-            public static WaveOut waveOut = new WaveOut();
+            shuffleCheckBox.Checked = Config.Shuffle;
+            changeShuffle.Enabled = shuffleCheckBox.Checked;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void startMusic_Click(object sender, EventArgs e)
         {
+            if (ConfigChanged && !SaveConfigPrompt()) return;
+
+            DisableConfigControls();
+
+            Player = new SongPlayer(Config);
             try
             {
                 DMC3Process = Process.GetProcessesByName("dmc3se")[0];
@@ -53,11 +68,40 @@ namespace dmc3music
             SongChangeTimer.Start();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void stopMusic_Click(object sender, EventArgs e)
         {
             SongChangeTimer.Stop();
             Player.Stop();
+            EnableConfigControls();
         }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!SaveConfigPrompt()) e.Cancel = true;
+        }
+
+        private void changeShuffle_Click(object sender, EventArgs e)
+        {
+            var shuffleForm = new ShuffleRotation(Config);
+            DialogResult result = shuffleForm.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                Config = shuffleForm.Config;
+                ConfigChanged = true;
+            }
+            shuffleForm.Dispose();
+        }
+
+        private void shuffleCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Config.Shuffle = shuffleCheckBox.Checked;
+            changeShuffle.Enabled = shuffleCheckBox.Checked;
+            ConfigChanged = true;
+        }
+
+        #endregion
+
+        #region Functionality Methods
 
         private void CheckSong(object sender, EventArgs e)
         {
@@ -79,5 +123,38 @@ namespace dmc3music
             ReadProcessMemory(ProcessHandle, enemyCountPtr2 + 0xA78, ref enemyCount, sizeof(int), 0);
             Player.PlayRoomSong(roomId, enemyCount);
         }
+
+        private bool SaveConfigPrompt()
+        {
+            DialogResult result = MessageBox.Show(
+                "Would you like to save your current configuration settings?",
+                "Save Configuration",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Exclamation
+            );
+
+            if (result == DialogResult.Yes)
+            {
+                DMC3MusicConfigWriter.WriteConfig(Config);
+                ConfigChanged = false;
+            }
+            return result != DialogResult.Cancel;
+        }
+
+        private void DisableConfigControls()
+        {
+            shuffleCheckBox.Enabled = false;
+            changeShuffle.Enabled = false;
+            startMusic.Enabled = false;
+        }
+
+        private void EnableConfigControls()
+        {
+            shuffleCheckBox.Enabled = true;
+            changeShuffle.Enabled = true;
+            startMusic.Enabled = true;
+        }
+
+        #endregion
     }
 }

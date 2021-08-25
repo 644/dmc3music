@@ -27,29 +27,15 @@ namespace dmc3music
             {411, "Versil_03_ver2.ogg" }
         };
 
-        private static List<string> BattleTable = new List<string>
-        {
-            "Battle_00.ogg",
-            "Battle_0a.ogg",
-            "Battle_01.ogg",
-            "Battle_02.ogg",
-            "Battle_03.ogg",
-            "Battle_04.ogg",
-            "Battle_05.ogg",
-            "Battle_06.ogg",
-            "Battle_07.ogg",
-            "Battle_08.ogg",
-            "Jikushinzou.ogg",
-            "Staffroll.ogg",
-            "TGS.ogg",
-        };
-
         private WaveOut OutputDevice { get; set; }
 
         public int RoomId { get; private set; }
+        
+        private DMC3MusicConfig Config { get; set; }
 
-        public SongPlayer() 
+        public SongPlayer(DMC3MusicConfig config) 
         {
+            Config = config;
             OutputDevice = new WaveOut();
             RoomId = -1;
         }
@@ -68,8 +54,8 @@ namespace dmc3music
                 if (!BossTable.TryGetValue(roomId, out string track))
                 {
                     Random rnd = new Random();
-                    int r = rnd.Next(BattleTable.Count);
-                    track = BattleTable[r];
+                    int r = rnd.Next(Config.ShuffleRotation.Count);
+                    track = Config.ShuffleRotation[r];
                 }
 
                 Console.WriteLine(track);
