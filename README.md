@@ -12,4 +12,4 @@ Make sure to disable the sound driver in style switcher otherwise you'll have mu
 
 Quick tutorial: https://www.youtube.com/watch?v=lcjveZsfgxE
 
-I plan to add more features in the future, like customizing tracks for each room/mission, adding your own tracks, and selecting the correct tracks for each room.
+I plan to add more features in the future, like customizing tracks for each room/mission, and adding your own tracks.
