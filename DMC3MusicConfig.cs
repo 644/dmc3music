@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 
@@ -8,8 +9,14 @@ namespace dmc3music
     {
         public string MusicPath { get; set; }
         public Dictionary<string, string> RoomTracks { get; set; }
+        public Dictionary<string, string> AmbientTracks { get; set; }
         public bool Shuffle { get; set; }
         public List<string> ShuffleRotation { get; set; }
+
+        internal object GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public static class DMC3MusicConfigWriter

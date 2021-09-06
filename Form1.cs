@@ -1,5 +1,4 @@
 ﻿using System;
-using NAudio.Wave;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
@@ -35,6 +34,7 @@ namespace dmc3music
             Player = new SongPlayer(Config);
             SongChangeTimer = new Timer();
             ConfigChanged = false;
+            volumeSlider1.VolumeChanged += OnVolumeSliderChanged;
         }
 
         #region Form Control Methods
@@ -43,6 +43,10 @@ namespace dmc3music
         {
             shuffleCheckBox.Checked = Config.Shuffle;
             changeShuffle.Enabled = shuffleCheckBox.Checked;
+        }
+        void OnVolumeSliderChanged(object sender, EventArgs e)
+        {
+            Player.Volume(volumeSlider1.Volume);
         }
 
         private void startMusic_Click(object sender, EventArgs e)
@@ -77,7 +81,7 @@ namespace dmc3music
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!SaveConfigPrompt()) e.Cancel = true;
+            if (ConfigChanged && !SaveConfigPrompt()) e.Cancel = true;
         }
 
         private void changeShuffle_Click(object sender, EventArgs e)
@@ -105,6 +109,11 @@ namespace dmc3music
 
         private void CheckSong(object sender, EventArgs e)
         {
+            if (Player.isPlaying)
+                label2.Text = "Playing: " + Player.OldTrack;
+            else
+                label2.Text = "Not Playing";
+
             int checkRoom = 0;
             ReadProcessMemory(ProcessHandle, BaseAddress + 0x20C39EC, ref checkRoom, sizeof(int), 0);
             if (checkRoom == 0)
@@ -145,16 +154,47 @@ namespace dmc3music
         {
             shuffleCheckBox.Enabled = false;
             changeShuffle.Enabled = false;
-            startMusic.Enabled = false;
+            pictureBox2.Enabled = false;
         }
 
         private void EnableConfigControls()
         {
             shuffleCheckBox.Enabled = true;
             changeShuffle.Enabled = true;
-            startMusic.Enabled = true;
+            pictureBox2.Enabled = true;
         }
 
         #endregion
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            if (ConfigChanged && !SaveConfigPrompt()) return;
+
+            DisableConfigControls();
+
+            Player = new SongPlayer(Config);
+            try
+            {
+                DMC3Process = Process.GetProcessesByName("dmc3se")[0];
+            }
+            catch
+            {
+                MessageBox.Show("pls start game first", "dmc3se.exe not found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            ProcessHandle = OpenProcess(PROCESS_WM_READ, false, DMC3Process.Id);
+            BaseAddress = DMC3Process.MainModule.BaseAddress.ToInt32();
+            SongChangeTimer = new Timer();
+            SongChangeTimer.Interval = 250;
+            SongChangeTimer.Tick += new EventHandler(CheckSong);
+            SongChangeTimer.Start();
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            SongChangeTimer.Stop();
+            Player.Stop();
+            EnableConfigControls();
+        }
     }
 }
