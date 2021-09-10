@@ -38,7 +38,7 @@ namespace dmc3music
             AmbientIsPlaying = false;
         }
 
-        public void PlayRoomSong(int roomId, int enemyCount)
+        public void PlayRoomSong(int roomId, int enemyCount, int missionNumber)
         {
             if (Config.Shuffle)
             {
@@ -69,65 +69,68 @@ namespace dmc3music
                 if (OutputDevice.PlaybackState == PlaybackState.Playing)
                 {
                     isPlaying = true;
-                    TrackPos = OutputDevice.GetPosition() * 1000.0 / OutputDevice.OutputWaveFormat.BitsPerSample / OutputDevice.OutputWaveFormat.Channels * 8 / OutputDevice.OutputWaveFormat.SampleRate;
+                    //TrackPos = OutputDevice.GetPosition() * 1000.0 / OutputDevice.OutputWaveFormat.BitsPerSample / OutputDevice.OutputWaveFormat.Channels * 8 / OutputDevice.OutputWaveFormat.SampleRate;
+                    TrackPos += 250;
 
                     if (TrackPositions.TryGetValue(OldTrack, out _))
+                    {
                         TrackPositions[OldTrack] = TrackPos;
+                    }
                     else
+                    {
                         TrackPositions.Add(OldTrack, TrackPos);
+                    }
 
-                    if (roomId != RoomId)
-                    {
-                        Stop();
-                    }
-                    else if (enemyCount > 0)
-                    {
-                        EnemiesGoneTimer = 0;
-                        if (AmbientIsPlaying && Config.RoomTracks.TryGetValue(roomId.ToString(), out _)) Stop();
-                    }
-                    else if (!AmbientIsPlaying)
-                    {
-                        if (EnemiesGoneTimer++ >= 24)
+                        if (roomId != RoomId)
                         {
-                            if (OutputDevice.Volume >= 0.05f)
-                                OutputDevice.Volume -= 0.05f;
-                            else if (OldVolume > 0.0f)
-                                Stop();
+                            Stop();
                         }
-                    }
+                        else if (enemyCount > 0)
+                        {
+                            EnemiesGoneTimer = 0;
+                            if (AmbientIsPlaying && Config.RoomTracks.TryGetValue(roomId.ToString() + "_" + missionNumber.ToString(), out _)) Stop();
+                        }
+                        else if (!AmbientIsPlaying)
+                        {
+                            if (EnemiesGoneTimer++ >= 24)
+                            {
+                                if (OutputDevice.Volume >= 0.05f)
+                                    OutputDevice.Volume -= 0.05f;
+                                else if (OldVolume > 0.0f)
+                                    Stop();
+                            }
+                        }
 
-                    return;
-                }
+                        return;
+                    }
 
                 EnemiesGoneTimer = 0;
                 RoomId = roomId;
 
-                if (enemyCount > 0 && Config.RoomTracks.TryGetValue(roomId.ToString(), out string track))
+                if (enemyCount > 0 && Config.RoomTracks.TryGetValue(roomId.ToString() + "_" + missionNumber.ToString(), out string track))
                 {
                     AmbientIsPlaying = false;
                 }
                 else
                 {
-                    if (Config.AmbientTracks.TryGetValue(roomId.ToString(), out track))
+                    if (Config.AmbientTracks.TryGetValue(roomId.ToString() + "_" + missionNumber.ToString(), out track))
                     {
                         AmbientIsPlaying = true;
                     }
                     else
                     {
-                        Random rnd = new Random();
-                        int r = rnd.Next(Config.ShuffleRotation.Count);
-                        track = Config.ShuffleRotation[r];
+                        return;
                     }
                 }
 
                 OutputDevice.Dispose();
                 OutputDevice = new WaveOut();
                 var vorbis = new VorbisWaveReader(@"tracks/" + track);
-                int TrackLength = Convert.ToInt32(vorbis.TotalTime.TotalSeconds / 2);
+                int TrackLength = Convert.ToInt32(vorbis.TotalTime.TotalSeconds);
 
                 try
                 {
-                    if (TrackPositions.TryGetValue(track, out double pos) && Convert.ToInt32(pos / 1000) < TrackLength)
+                    if (TrackPositions.TryGetValue(track, out double pos) && Convert.ToInt32(pos / 1000) < TrackLength && AmbientIsPlaying)
                     {
                         Console.WriteLine(Convert.ToInt32(pos / 1000).ToString() + " " + TrackLength.ToString());
                         vorbis.Skip(Convert.ToInt32(pos / 1000));

@@ -19,6 +19,8 @@ namespace dmc3music
 
         private Timer SongChangeTimer { get; set; }
 
+        private Timer GameStartTimer { get; set; }
+
         private SongPlayer Player { get; set; }
 
         private Process DMC3Process { get; set; }
@@ -35,6 +37,10 @@ namespace dmc3music
             SongChangeTimer = new Timer();
             ConfigChanged = false;
             volumeSlider1.VolumeChanged += OnVolumeSliderChanged;
+            GameStartTimer = new Timer();
+            GameStartTimer.Interval = 250;
+            GameStartTimer.Tick += new EventHandler(GameStart);
+            GameStartTimer.Start();
         }
 
         #region Form Control Methods
@@ -47,36 +53,6 @@ namespace dmc3music
         void OnVolumeSliderChanged(object sender, EventArgs e)
         {
             Player.Volume(volumeSlider1.Volume);
-        }
-
-        private void startMusic_Click(object sender, EventArgs e)
-        {
-            if (ConfigChanged && !SaveConfigPrompt()) return;
-
-            DisableConfigControls();
-
-            Player = new SongPlayer(Config);
-            try
-            {
-                DMC3Process = Process.GetProcessesByName("dmc3se")[0];
-            } catch
-            {
-                MessageBox.Show("pls start game first", "dmc3se.exe not found", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            ProcessHandle = OpenProcess(PROCESS_WM_READ, false, DMC3Process.Id);
-            BaseAddress = DMC3Process.MainModule.BaseAddress.ToInt32();
-            SongChangeTimer = new Timer();
-            SongChangeTimer.Interval = 250;
-            SongChangeTimer.Tick += new EventHandler(CheckSong);
-            SongChangeTimer.Start();
-        }
-
-        private void stopMusic_Click(object sender, EventArgs e)
-        {
-            SongChangeTimer.Stop();
-            Player.Stop();
-            EnableConfigControls();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -103,9 +79,61 @@ namespace dmc3music
             ConfigChanged = true;
         }
 
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            if (ConfigChanged && !SaveConfigPrompt()) return;
+
+            DisableConfigControls();
+
+            Player = new SongPlayer(Config);
+            try
+            {
+                DMC3Process = Process.GetProcessesByName("dmc3se")[0];
+            }
+            catch
+            {
+                MessageBox.Show("pls start game first", "dmc3se.exe not found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            ProcessHandle = OpenProcess(PROCESS_WM_READ, false, DMC3Process.Id);
+            BaseAddress = DMC3Process.MainModule.BaseAddress.ToInt32();
+            SongChangeTimer = new Timer();
+            SongChangeTimer.Interval = 250;
+            SongChangeTimer.Tick += new EventHandler(CheckSong);
+            SongChangeTimer.Start();
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            SongChangeTimer.Stop();
+            Player.Stop();
+            EnableConfigControls();
+        }
+
         #endregion
 
         #region Functionality Methods
+
+        private void GameStart(object sender, EventArgs e)
+        {
+            Player = new SongPlayer(Config);
+            try
+            {
+                DMC3Process = Process.GetProcessesByName("dmc3se")[0];
+            }
+            catch
+            {
+                return;
+            }
+            GameStartTimer.Stop();
+            DisableConfigControls();
+            ProcessHandle = OpenProcess(PROCESS_WM_READ, false, DMC3Process.Id);
+            BaseAddress = DMC3Process.MainModule.BaseAddress.ToInt32();
+            SongChangeTimer = new Timer();
+            SongChangeTimer.Interval = 250;
+            SongChangeTimer.Tick += new EventHandler(CheckSong);
+            SongChangeTimer.Start();
+        }
 
         private void CheckSong(object sender, EventArgs e)
         {
@@ -116,9 +144,15 @@ namespace dmc3music
 
             int checkRoom = 0;
             ReadProcessMemory(ProcessHandle, BaseAddress + 0x20C39EC, ref checkRoom, sizeof(int), 0);
+
             if (checkRoom == 0)
             {
                 Player.Stop();
+                if (Process.GetProcessesByName("dmc3se").Length == 0)
+                {
+                    SongChangeTimer.Stop();
+                    GameStartTimer.Start();
+                }
                 return;
             }
 
@@ -126,11 +160,14 @@ namespace dmc3music
             int enemyCount = -1;
             int enemyCountPtr1 = -1;
             int enemyCountPtr2 = -1;
+            int missionNumber = -1;
             ReadProcessMemory(ProcessHandle, BaseAddress + 0x76B150, ref roomId, sizeof(int), 0);
             ReadProcessMemory(ProcessHandle, BaseAddress + 0x76B860 + 0xC40 + 0x8, ref enemyCountPtr1, sizeof(int), 0);
             ReadProcessMemory(ProcessHandle, enemyCountPtr1 + 0x18, ref enemyCountPtr2, sizeof(int), 0);
             ReadProcessMemory(ProcessHandle, enemyCountPtr2 + 0xA78, ref enemyCount, sizeof(int), 0);
-            Player.PlayRoomSong(roomId, enemyCount);
+            ReadProcessMemory(ProcessHandle, BaseAddress + 0x76B148, ref missionNumber, sizeof(int), 0);
+
+            Player.PlayRoomSong(roomId, enemyCount, missionNumber);
         }
 
         private bool SaveConfigPrompt()
@@ -165,36 +202,5 @@ namespace dmc3music
         }
 
         #endregion
-
-        private void pictureBox2_Click(object sender, EventArgs e)
-        {
-            if (ConfigChanged && !SaveConfigPrompt()) return;
-
-            DisableConfigControls();
-
-            Player = new SongPlayer(Config);
-            try
-            {
-                DMC3Process = Process.GetProcessesByName("dmc3se")[0];
-            }
-            catch
-            {
-                MessageBox.Show("pls start game first", "dmc3se.exe not found", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            ProcessHandle = OpenProcess(PROCESS_WM_READ, false, DMC3Process.Id);
-            BaseAddress = DMC3Process.MainModule.BaseAddress.ToInt32();
-            SongChangeTimer = new Timer();
-            SongChangeTimer.Interval = 250;
-            SongChangeTimer.Tick += new EventHandler(CheckSong);
-            SongChangeTimer.Start();
-        }
-
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-            SongChangeTimer.Stop();
-            Player.Stop();
-            EnableConfigControls();
-        }
     }
 }
