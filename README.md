@@ -6,7 +6,7 @@ First, [click here to download](https://github.com/644/dmc3music/releases/downlo
 
 Then unzip, start the game and click the play button.
 
-It will play the correct tracks for most rooms, only rooms that are reused later in the game play the later song's version, but that can be fixed in a later release by using the mission number. It also fades out tracks when all enemies are killed, remembers a tracks play position across rooms, has a volume slider, and an option to shuffle the songs instead of playing the correct ones.
+It should play the correct tracks in every room, aside from a few places that will be fixed in a later release. If any rooms are missing, please let me know which by filing an issue here, or messaging me (hies) on the [dmc3 discord](https://discord.gg/yhJdCHm). It also fades out tracks when all enemies are killed, remembers a tracks play position across rooms (can customize for how long), has a volume slider, and an option to shuffle the songs instead of playing the correct ones.
 
 Make sure to disable the sound driver in style switcher otherwise you'll have multiple tracks playing.
 
