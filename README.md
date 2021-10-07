@@ -1,8 +1,8 @@
 # DMC3 Music
-![image](https://user-images.githubusercontent.com/17060633/132148190-aa886e3c-3146-486f-8fd4-a6c745dc3241.png)
+![image](https://user-images.githubusercontent.com/17060633/136427727-3d072174-8455-4d7a-9da8-f6ebc54a966d.png)
 
 ### How to setup
-First, [click here to download](https://github.com/644/dmc3music/releases/download/v1.5/dmc3music.zip)
+First, [click here to download](https://github.com/644/dmc3music/releases/download/v1.6/dmc3music.zip)
 
 Then unzip, start the game and click the play button.
 
