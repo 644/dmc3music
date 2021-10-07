@@ -13,6 +13,10 @@ namespace dmc3music
         public bool Shuffle { get; set; }
         public List<string> ShuffleRotation { get; set; }
 
+        public int BattleTimer { get; set; }
+
+        public int AmbientTimer { get; set; }
+
         internal object GetEnumerator()
         {
             throw new NotImplementedException();

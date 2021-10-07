@@ -1,5 +1,7 @@
 ﻿{
 	"MusicPath": "tracks",
+	"BattleTimer": 10,
+	"AmbientTimer":  60,
 	"RoomTracks": {
 		"0_1": "Battle_00.ogg",
 		"1_2": "Battle_03.ogg",
@@ -12,6 +14,7 @@
 		"110_4": "Battle_03.ogg",
 		"104_4": "Battle_01.ogg",
 		"111_4": "T_boss.ogg",
+		"101_5": "Battle_03.ogg",
 		"102_5": "Battle_03.ogg",
 		"110_5": "Battle_03.ogg",
 		"104_5": "Battle_01.ogg",

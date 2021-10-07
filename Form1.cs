@@ -49,6 +49,8 @@ namespace dmc3music
         {
             shuffleCheckBox.Checked = Config.Shuffle;
             changeShuffle.Enabled = shuffleCheckBox.Checked;
+            numericUpDown1.Value = Config.BattleTimer;
+            numericUpDown2.Value = Config.AmbientTimer;
         }
         void OnVolumeSliderChanged(object sender, EventArgs e)
         {
@@ -199,6 +201,24 @@ namespace dmc3music
             shuffleCheckBox.Enabled = true;
             changeShuffle.Enabled = true;
             pictureBox2.Enabled = true;
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            if (Config.BattleTimer != (int)numericUpDown1.Value)
+            {
+                Config.BattleTimer = (int)numericUpDown1.Value;
+                ConfigChanged = true;
+            }
+        }
+
+        private void numericUpDown2_ValueChanged(object sender, EventArgs e)
+        {
+            if (Config.AmbientTimer != (int)numericUpDown2.Value)
+            {
+                Config.AmbientTimer = (int)numericUpDown2.Value;
+                ConfigChanged = true;
+            }
         }
 
         #endregion

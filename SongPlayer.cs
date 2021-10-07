@@ -11,6 +11,8 @@ namespace dmc3music
 
         public int RoomId { get; set; }
 
+        public int oldMissionNumber { get; set; }
+
         public int EnemiesGoneTimer { get; set; }
 
         public bool AmbientIsPlaying { get; set; }
@@ -24,6 +26,8 @@ namespace dmc3music
         public int TrackPercent { get; set; } = 0;
 
         public Dictionary<string, double> TrackPositions { get; set; } = new Dictionary<string, double>();
+
+        public Dictionary<string, long> TrackStartTime { get; set; } = new Dictionary<string, long>();
 
         public string OldTrack { get; set; }
 
@@ -40,6 +44,13 @@ namespace dmc3music
 
         public void PlayRoomSong(int roomId, int enemyCount, int missionNumber)
         {
+            if(missionNumber != oldMissionNumber)
+            {
+                oldMissionNumber = missionNumber;
+                TrackPositions.Clear();
+                TrackStartTime.Clear();
+            }
+
             if (Config.Shuffle)
             {
                 if (OutputDevice.PlaybackState == PlaybackState.Playing)
@@ -130,10 +141,23 @@ namespace dmc3music
 
                 try
                 {
-                    if (TrackPositions.TryGetValue(track, out double pos) && Convert.ToInt32(pos / 1000) < TrackLength && AmbientIsPlaying)
+                    long currentTime = 0;
+                    long startTime = 0;
+                    
+                    if(TrackStartTime.TryGetValue(OldTrack, out startTime)){
+                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                    }
+
+                    if (TrackPositions.TryGetValue(track, out double pos) && Convert.ToInt32(pos / 1000) < TrackLength)
                     {
-                        Console.WriteLine(Convert.ToInt32(pos / 1000).ToString() + " " + TrackLength.ToString());
-                        vorbis.Skip(Convert.ToInt32(pos / 1000));
+                        if ((AmbientIsPlaying && currentTime - startTime < (Config.AmbientTimer * 1000)) || currentTime - startTime < (Config.BattleTimer * 1000))
+                        {
+                            vorbis.Skip(Convert.ToInt32(pos / 1000));
+                        }
+                    }
+                    else
+                    {
+                        TrackPos = 0;
                     }
                 }
                 catch { }
@@ -142,6 +166,15 @@ namespace dmc3music
                 OutputDevice.Volume = OldVolume;
                 OutputDevice.Init(vorbis);
                 OutputDevice.Play();
+                long timeStarted = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                if (TrackStartTime.TryGetValue(OldTrack, out _))
+                {
+                    TrackStartTime[OldTrack] = timeStarted;
+                }
+                else
+                {
+                    TrackStartTime.Add(OldTrack, timeStarted);
+                }
                 Console.WriteLine(track);
             }
         }
