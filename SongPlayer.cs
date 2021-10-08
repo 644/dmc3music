@@ -1,5 +1,6 @@
 ﻿using NAudio.Vorbis;
 using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
 using System;
 using System.Collections.Generic;
 
@@ -9,7 +10,13 @@ namespace dmc3music
     {
         private WaveOut OutputDevice { get; set; }
 
+        public VorbisWaveReader vorbis { get; set; }
+
+        public FadeInOutSampleProvider fade { get; set; }
+
         public int RoomId { get; set; }
+
+        public int fadeTimer { get; set; } = 0;
 
         public int oldMissionNumber { get; set; }
 
@@ -42,6 +49,18 @@ namespace dmc3music
             AmbientIsPlaying = false;
         }
 
+        public void FadeOut()
+        {
+            if (fadeTimer == 0)
+            {
+                fade.BeginFadeOut(2000);
+            }
+            if (fadeTimer++ >= 10)
+            {
+                Stop();
+            }
+        }
+
         public void PlayRoomSong(int roomId, int enemyCount, int missionNumber)
         {
             if(missionNumber != oldMissionNumber)
@@ -55,7 +74,10 @@ namespace dmc3music
             {
                 if (OutputDevice.PlaybackState == PlaybackState.Playing)
                 {
-                    if (roomId != RoomId) Stop();
+                    if (roomId != RoomId)
+                    {
+                        FadeOut();
+                    }
                     return;
                 }
 
@@ -81,7 +103,7 @@ namespace dmc3music
                 {
                     isPlaying = true;
                     //TrackPos = OutputDevice.GetPosition() * 1000.0 / OutputDevice.OutputWaveFormat.BitsPerSample / OutputDevice.OutputWaveFormat.Channels * 8 / OutputDevice.OutputWaveFormat.SampleRate;
-                    TrackPos += 250;
+                    TrackPos += 50;
 
                     if (TrackPositions.TryGetValue(OldTrack, out _))
                     {
@@ -92,28 +114,35 @@ namespace dmc3music
                         TrackPositions.Add(OldTrack, TrackPos);
                     }
 
-                        if (roomId != RoomId)
-                        {
-                            Stop();
-                        }
-                        else if (enemyCount > 0)
-                        {
-                            EnemiesGoneTimer = 0;
-                            if (AmbientIsPlaying && Config.RoomTracks.TryGetValue(roomId.ToString() + "_" + missionNumber.ToString(), out _)) Stop();
-                        }
-                        else if (!AmbientIsPlaying)
-                        {
-                            if (EnemiesGoneTimer++ >= 24)
-                            {
-                                if (OutputDevice.Volume >= 0.05f)
-                                    OutputDevice.Volume -= 0.05f;
-                                else if (OldVolume > 0.0f)
-                                    Stop();
-                            }
-                        }
-
+                    if (roomId != RoomId)
+                    {
+                        FadeOut();
                         return;
                     }
+                    
+                    if(fadeTimer > 0)
+                    {
+                        fadeTimer = 0;
+                    }
+                    
+                    if (enemyCount > 0)
+                    {
+                        EnemiesGoneTimer = 0;
+                        if (AmbientIsPlaying && Config.RoomTracks.TryGetValue(roomId.ToString() + "_" + missionNumber.ToString(), out _)) Stop();
+                    }
+                    else if (!AmbientIsPlaying)
+                    {
+                        if (EnemiesGoneTimer++ >= 120)
+                        {
+                            if (OutputDevice.Volume >= 0.01f)
+                                OutputDevice.Volume -= 0.01f;
+                            else if (OldVolume > 0.0f)
+                                Stop();
+                        }
+                    }
+
+                    return;
+                }
 
                 EnemiesGoneTimer = 0;
                 RoomId = roomId;
@@ -136,7 +165,7 @@ namespace dmc3music
 
                 OutputDevice.Dispose();
                 OutputDevice = new WaveOut();
-                var vorbis = new VorbisWaveReader(@"tracks/" + track);
+                vorbis = new VorbisWaveReader(@"tracks/" + track);
                 int TrackLength = Convert.ToInt32(vorbis.TotalTime.TotalSeconds);
 
                 try
@@ -162,9 +191,17 @@ namespace dmc3music
                 }
                 catch { }
 
+                fade = new FadeInOutSampleProvider(vorbis, true);
+                if(OldTrack == track)
+                {
+                    fade.BeginFadeIn(100);
+                } else
+                {
+                    fade.BeginFadeIn(2000);
+                }
                 OldTrack = track;
                 OutputDevice.Volume = OldVolume;
-                OutputDevice.Init(vorbis);
+                OutputDevice.Init(fade);
                 OutputDevice.Play();
                 long timeStarted = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                 if (TrackStartTime.TryGetValue(OldTrack, out _))
@@ -196,6 +233,7 @@ namespace dmc3music
                 OutputDevice.Stop();
                 isPlaying = false;
                 AmbientIsPlaying = false;
+                fadeTimer = 0;
             }
         }
     }

@@ -38,7 +38,7 @@ namespace dmc3music
             ConfigChanged = false;
             volumeSlider1.VolumeChanged += OnVolumeSliderChanged;
             GameStartTimer = new Timer();
-            GameStartTimer.Interval = 250;
+            GameStartTimer.Interval = 50;
             GameStartTimer.Tick += new EventHandler(GameStart);
             GameStartTimer.Start();
         }
@@ -100,7 +100,7 @@ namespace dmc3music
             ProcessHandle = OpenProcess(PROCESS_WM_READ, false, DMC3Process.Id);
             BaseAddress = DMC3Process.MainModule.BaseAddress.ToInt32();
             SongChangeTimer = new Timer();
-            SongChangeTimer.Interval = 250;
+            SongChangeTimer.Interval = 50;
             SongChangeTimer.Tick += new EventHandler(CheckSong);
             SongChangeTimer.Start();
         }
@@ -132,7 +132,7 @@ namespace dmc3music
             ProcessHandle = OpenProcess(PROCESS_WM_READ, false, DMC3Process.Id);
             BaseAddress = DMC3Process.MainModule.BaseAddress.ToInt32();
             SongChangeTimer = new Timer();
-            SongChangeTimer.Interval = 250;
+            SongChangeTimer.Interval = 50;
             SongChangeTimer.Tick += new EventHandler(CheckSong);
             SongChangeTimer.Start();
         }
@@ -144,16 +144,22 @@ namespace dmc3music
             else
                 label2.Text = "Not Playing";
 
+            if (Process.GetProcessesByName("dmc3se").Length == 0)
+            {
+                Player.Stop();
+                SongChangeTimer.Stop();
+                GameStartTimer.Start();
+                return;
+            }
+
             int checkRoom = 0;
             ReadProcessMemory(ProcessHandle, BaseAddress + 0x20C39EC, ref checkRoom, sizeof(int), 0);
 
             if (checkRoom == 0)
             {
-                Player.Stop();
-                if (Process.GetProcessesByName("dmc3se").Length == 0)
+                if (Player.isPlaying)
                 {
-                    SongChangeTimer.Stop();
-                    GameStartTimer.Start();
+                    Player.FadeOut();
                 }
                 return;
             }
@@ -163,11 +169,13 @@ namespace dmc3music
             int enemyCountPtr1 = -1;
             int enemyCountPtr2 = -1;
             int missionNumber = -1;
+            int isLoading = -1;
             ReadProcessMemory(ProcessHandle, BaseAddress + 0x76B150, ref roomId, sizeof(int), 0);
             ReadProcessMemory(ProcessHandle, BaseAddress + 0x76B860 + 0xC40 + 0x8, ref enemyCountPtr1, sizeof(int), 0);
             ReadProcessMemory(ProcessHandle, enemyCountPtr1 + 0x18, ref enemyCountPtr2, sizeof(int), 0);
             ReadProcessMemory(ProcessHandle, enemyCountPtr2 + 0xA78, ref enemyCount, sizeof(int), 0);
             ReadProcessMemory(ProcessHandle, BaseAddress + 0x76B148, ref missionNumber, sizeof(int), 0);
+            ReadProcessMemory(ProcessHandle, BaseAddress + 0x205BCB8, ref isLoading, sizeof(int), 0);
 
             Player.PlayRoomSong(roomId, enemyCount, missionNumber);
         }
