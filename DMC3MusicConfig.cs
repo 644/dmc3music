@@ -8,13 +8,12 @@ namespace dmc3music
     public class DMC3MusicConfig
     {
         public string MusicPath { get; set; }
+        public string DMC3Path { get; set; }
         public Dictionary<string, string> RoomTracks { get; set; }
         public Dictionary<string, string> AmbientTracks { get; set; }
         public bool Shuffle { get; set; }
         public List<string> ShuffleRotation { get; set; }
-
         public int BattleTimer { get; set; }
-
         public int AmbientTimer { get; set; }
 
         internal object GetEnumerator()

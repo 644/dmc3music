@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace dmc3music
@@ -24,7 +20,7 @@ namespace dmc3music
         {
             List<string> tracks = TrackReader.ReadTracks(Config.MusicPath, new string[] { "*.ogg" });
             HashSet<string> shuffleRotationSet = Config.ShuffleRotation.ToHashSet();
-            foreach(string track in tracks)
+            foreach (string track in tracks)
             {
                 if (shuffleRotationSet.Contains(track))
                 {

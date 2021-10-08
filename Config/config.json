@@ -2,6 +2,7 @@
 	"MusicPath": "tracks",
 	"BattleTimer": 10,
 	"AmbientTimer": 60,
+	"DMC3Path": "",
 	"RoomTracks": {
 		"0_1": "Battle_00.ogg",
 		"1_2": "Battle_03.ogg",

@@ -40,7 +40,7 @@ namespace dmc3music
 
         private DMC3MusicConfig Config { get; set; }
 
-        public SongPlayer(DMC3MusicConfig config) 
+        public SongPlayer(DMC3MusicConfig config)
         {
             Config = config;
             OutputDevice = new WaveOut();
@@ -63,7 +63,7 @@ namespace dmc3music
 
         public void PlayRoomSong(int roomId, int enemyCount, int missionNumber)
         {
-            if(missionNumber != oldMissionNumber)
+            if (missionNumber != oldMissionNumber)
             {
                 oldMissionNumber = missionNumber;
                 TrackPositions.Clear();
@@ -119,12 +119,12 @@ namespace dmc3music
                         FadeOut();
                         return;
                     }
-                    
-                    if(fadeTimer > 0)
+
+                    if (fadeTimer > 0)
                     {
                         fadeTimer = 0;
                     }
-                    
+
                     if (enemyCount > 0)
                     {
                         EnemiesGoneTimer = 0;
@@ -172,8 +172,9 @@ namespace dmc3music
                 {
                     long currentTime = 0;
                     long startTime = 0;
-                    
-                    if(TrackStartTime.TryGetValue(OldTrack, out startTime)){
+
+                    if (TrackStartTime.TryGetValue(OldTrack, out startTime))
+                    {
                         currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                     }
 
@@ -192,10 +193,11 @@ namespace dmc3music
                 catch { }
 
                 fade = new FadeInOutSampleProvider(vorbis, true);
-                if(OldTrack == track)
+                if (OldTrack == track)
                 {
                     fade.BeginFadeIn(100);
-                } else
+                }
+                else
                 {
                     fade.BeginFadeIn(2000);
                 }
