@@ -7,7 +7,7 @@
     <ProjectGuid>{F4E5BA49-0096-4B36-8FD6-F4BE84F4D3D9}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>dmc3music</RootNamespace>
-    <AssemblyName>dmc3music</AssemblyName>
+    <AssemblyName>dmc3tools</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -231,6 +231,16 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <None Include="README.md" />
+    <None Include="saves\Dante_100%25_Mekarazium.sav" />
+    <None Include="saves\Dante_Clean_Save_hies.sav" />
+    <None Include="saves\Dante_NG_DMD_M13_M20_hies.sav" />
+    <None Include="saves\Dante_NG_DMD_M3_M12_hies.sav" />
+    <None Include="saves\Dante_NG_Normal_M10_M19_Simoteus.sav" />
+    <None Include="saves\Dante_NG_Normal_M13_M20_hies.sav" />
+    <None Include="saves\Dante_NG_Normal_M2_M9_Simoteus.sav" />
+    <None Include="saves\Dante_NG_Normal_M3_M12_hies.sav" />
+    <None Include="saves\Vergil_NG_Normal_M11_M20_DECosmic.sav" />
+    <None Include="saves\Vergil_NG_Normal_M2_M10_DECosmic.sav" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
