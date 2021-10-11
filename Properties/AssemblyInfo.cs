@@ -1,13 +1,12 @@
-﻿using System.Resources;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿using System.Reflection;
+using System.Resources;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("dmc3music")]
-[assembly: AssemblyDescription("fix the music for the 2006 dmc3 port")]
+[assembly: AssemblyTitle("dmc3tools")]
+[assembly: AssemblyDescription("fix the music for the 2006 dmc3 port and other stuff")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("hies")]
 [assembly: AssemblyProduct("dmc3music")]
@@ -33,6 +32,6 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.4.0.0")]
-[assembly: AssemblyFileVersion("1.4.0.0")]
+[assembly: AssemblyVersion("1.7.0.0")]
+[assembly: AssemblyFileVersion("1.7.0.0")]
 [assembly: NeutralResourcesLanguage("en")]

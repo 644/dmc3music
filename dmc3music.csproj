@@ -7,11 +7,12 @@
     <ProjectGuid>{F4E5BA49-0096-4B36-8FD6-F4BE84F4D3D9}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>dmc3music</RootNamespace>
-    <AssemblyName>dmc3music</AssemblyName>
+    <AssemblyName>dmc3tools</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -24,7 +25,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -50,6 +50,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <PlatformTarget>x86</PlatformTarget>
@@ -123,11 +125,21 @@
     <Reference Include="NVorbis, Version=0.10.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\NVorbis.0.10.3\lib\net45\NVorbis.dll</HintPath>
     </Reference>
+    <Reference Include="PeanutButter.INI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\PeanutButter.INI.2.0.38\lib\net462\PeanutButter.INI.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DirectInput, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>packages\SharpDX.DirectInput.4.2.0\lib\net45\SharpDX.DirectInput.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
     </Reference>
@@ -174,12 +186,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ControllerConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ControllerConfig.Designer.cs">
+      <DependentUpon>ControllerConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="DMC3MusicConfig.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MessageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MessageForm.Designer.cs">
+      <DependentUpon>MessageForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -190,9 +214,22 @@
       <DependentUpon>ShuffleRotation.cs</DependentUpon>
     </Compile>
     <Compile Include="SongPlayer.cs" />
+    <Compile Include="SplitsGenerator.cs" />
+    <Compile Include="StyleSwitcher.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StyleSwitcher.Designer.cs">
+      <DependentUpon>StyleSwitcher.cs</DependentUpon>
+    </Compile>
     <Compile Include="TrackReader.cs" />
+    <EmbeddedResource Include="ControllerConfig.resx">
+      <DependentUpon>ControllerConfig.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MessageForm.resx">
+      <DependentUpon>MessageForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -206,6 +243,9 @@
     </Compile>
     <EmbeddedResource Include="ShuffleRotation.resx">
       <DependentUpon>ShuffleRotation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StyleSwitcher.resx">
+      <DependentUpon>StyleSwitcher.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Config\config.default.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -227,6 +267,19 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <None Include="README.md" />
+    <None Include="saves\Dante_100%25_Mekarazium.sav" />
+    <None Include="saves\Dante_Clean_Save_hies.sav" />
+    <None Include="saves\Dante_NG_DMD_M13_M20_hies.sav" />
+    <None Include="saves\Dante_NG_DMD_M3_M12_hies.sav" />
+    <None Include="saves\Dante_NG_Normal_M10_M19_Simoteus.sav" />
+    <None Include="saves\Dante_NG_Normal_M13_M20_hies.sav" />
+    <None Include="saves\Dante_NG_Normal_M2_M9_Simoteus.sav" />
+    <None Include="saves\Dante_NG_Normal_M3_M12_hies.sav" />
+    <None Include="saves\Vergil_NG_Normal_M11_M20_DECosmic.sav" />
+    <None Include="saves\Vergil_NG_Normal_M2_M10_DECosmic.sav" />
+    <None Include="styleswitcher\dmc3se.ini" />
+    <None Include="styleswitcher\install.bat" />
+    <None Include="styleswitcher\StyleSwitcher.ini" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -234,9 +287,39 @@
   <ItemGroup>
     <None Include="Resources\icons8-pause-30.png" />
     <None Include="Resources\icons8-play-30.png" />
+    <None Include="Resources\input.png" />
+    <None Include="Resources\triangle.png" />
+    <None Include="Resources\square.png" />
+    <None Include="Resources\cross.png" />
+    <None Include="Resources\circle.png" />
+    <None Include="Resources\start.png" />
+    <None Include="Resources\select.png" />
+    <None Include="Resources\l1.png" />
+    <None Include="Resources\l2.png" />
+    <None Include="Resources\r1.png" />
+    <None Include="Resources\r2.png" />
+    <None Include="Resources\r3.png" />
+    <None Include="Resources\l3.png" />
+    <None Include="Resources\circle-clicked.png" />
+    <None Include="Resources\cross-clicked.png" />
+    <None Include="Resources\l1-clicked.png" />
+    <None Include="Resources\l2-clicked.png" />
+    <None Include="Resources\l3-clicked.png" />
+    <None Include="Resources\r1-clicked.png" />
+    <None Include="Resources\r2-clicked.png" />
+    <None Include="Resources\r3-clicked.png" />
+    <None Include="Resources\select-clicked.png" />
+    <None Include="Resources\square-clicked.png" />
+    <None Include="Resources\start-clicked.png" />
+    <None Include="Resources\triangle-clicked.png" />
+    <Content Include="inputsthing\dinput8.dll" />
+    <Content Include="inputsthing\dsound.dll" />
+    <Content Include="styleswitcher\dinput8.dll" />
+    <Content Include="styleswitcher\StyleSwitcher.dll" />
     <Content Include="tracks\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
