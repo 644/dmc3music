@@ -68,6 +68,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.label9 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.tabPage3.SuspendLayout();
@@ -268,6 +269,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.label9);
             this.tabPage2.Controls.Add(this.checkBox2);
             this.tabPage2.Controls.Add(this.button4);
             this.tabPage2.Controls.Add(this.button9);
@@ -294,6 +296,7 @@
             this.checkBox2.TabIndex = 25;
             this.checkBox2.Text = "DMC3 Inputs Thing";
             this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
             // 
             // button4
             // 
@@ -444,6 +447,14 @@
             this.tabControl1.Size = new System.Drawing.Size(245, 273);
             this.tabControl1.TabIndex = 16;
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(3, 151);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(0, 13);
+            this.label9.TabIndex = 26;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -509,6 +520,7 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Label label9;
     }
 }
 

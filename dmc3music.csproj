@@ -125,6 +125,9 @@
     <Reference Include="NVorbis, Version=0.10.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\NVorbis.0.10.3\lib\net45\NVorbis.dll</HintPath>
     </Reference>
+    <Reference Include="PeanutButter.INI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\PeanutButter.INI.2.0.38\lib\net462\PeanutButter.INI.dll</HintPath>
+    </Reference>
     <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
     </Reference>
@@ -274,6 +277,9 @@
     <None Include="saves\Dante_NG_Normal_M3_M12_hies.sav" />
     <None Include="saves\Vergil_NG_Normal_M11_M20_DECosmic.sav" />
     <None Include="saves\Vergil_NG_Normal_M2_M10_DECosmic.sav" />
+    <None Include="styleswitcher\dmc3se.ini" />
+    <None Include="styleswitcher\install.bat" />
+    <None Include="styleswitcher\StyleSwitcher.ini" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -306,9 +312,14 @@
     <None Include="Resources\square-clicked.png" />
     <None Include="Resources\start-clicked.png" />
     <None Include="Resources\triangle-clicked.png" />
+    <Content Include="inputsthing\dinput8.dll" />
+    <Content Include="inputsthing\dsound.dll" />
+    <Content Include="styleswitcher\dinput8.dll" />
+    <Content Include="styleswitcher\StyleSwitcher.dll" />
     <Content Include="tracks\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

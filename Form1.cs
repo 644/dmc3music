@@ -569,5 +569,36 @@ namespace dmc3music
             }
             catch { }
         }
+
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if ((string)Config.DMC3Path == string.Empty || Config.DMC3Path == null || !Directory.Exists(Config.DMC3Path))
+                {
+                    MessageBox.Show("Please make sure the path to DMC3 is correct in the Options tab", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                if (checkBox2.Checked)
+                {
+                    foreach (string filename in Directory.EnumerateFiles("./inputsthing"))
+                    {
+                        string modName = filename.Split('\\').Last();
+                        string dest = Path.Combine(Config.DMC3Path, modName);
+                        File.Copy(filename, dest, true);
+                        label9.Text = "Successfully Installed!";
+                    }
+                } else
+                {
+                    string dinputSrc = "./styleswitcher/dinput8.dll";
+                    string dest = Path.Combine(Config.DMC3Path, "dinput8.dll");
+                    File.Copy(dinputSrc, dest, true);
+                    label9.Text = "Successfully Uninstalled!";
+                }
+            }
+            catch {
+                label9.Text = "Failed To Install!";
+            }
+        }
     }
 }
