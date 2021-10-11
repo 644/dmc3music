@@ -125,6 +125,12 @@
     <Reference Include="NVorbis, Version=0.10.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\NVorbis.0.10.3\lib\net45\NVorbis.dll</HintPath>
     </Reference>
+    <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DirectInput, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>packages\SharpDX.DirectInput.4.2.0\lib\net45\SharpDX.DirectInput.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
@@ -177,12 +183,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ControllerConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ControllerConfig.Designer.cs">
+      <DependentUpon>ControllerConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="DMC3MusicConfig.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MessageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MessageForm.Designer.cs">
+      <DependentUpon>MessageForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -194,9 +212,21 @@
     </Compile>
     <Compile Include="SongPlayer.cs" />
     <Compile Include="SplitsGenerator.cs" />
+    <Compile Include="StyleSwitcher.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StyleSwitcher.Designer.cs">
+      <DependentUpon>StyleSwitcher.cs</DependentUpon>
+    </Compile>
     <Compile Include="TrackReader.cs" />
+    <EmbeddedResource Include="ControllerConfig.resx">
+      <DependentUpon>ControllerConfig.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MessageForm.resx">
+      <DependentUpon>MessageForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -210,6 +240,9 @@
     </Compile>
     <EmbeddedResource Include="ShuffleRotation.resx">
       <DependentUpon>ShuffleRotation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StyleSwitcher.resx">
+      <DependentUpon>StyleSwitcher.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Config\config.default.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -248,6 +281,31 @@
   <ItemGroup>
     <None Include="Resources\icons8-pause-30.png" />
     <None Include="Resources\icons8-play-30.png" />
+    <None Include="Resources\input.png" />
+    <None Include="Resources\triangle.png" />
+    <None Include="Resources\square.png" />
+    <None Include="Resources\cross.png" />
+    <None Include="Resources\circle.png" />
+    <None Include="Resources\start.png" />
+    <None Include="Resources\select.png" />
+    <None Include="Resources\l1.png" />
+    <None Include="Resources\l2.png" />
+    <None Include="Resources\r1.png" />
+    <None Include="Resources\r2.png" />
+    <None Include="Resources\r3.png" />
+    <None Include="Resources\l3.png" />
+    <None Include="Resources\circle-clicked.png" />
+    <None Include="Resources\cross-clicked.png" />
+    <None Include="Resources\l1-clicked.png" />
+    <None Include="Resources\l2-clicked.png" />
+    <None Include="Resources\l3-clicked.png" />
+    <None Include="Resources\r1-clicked.png" />
+    <None Include="Resources\r2-clicked.png" />
+    <None Include="Resources\r3-clicked.png" />
+    <None Include="Resources\select-clicked.png" />
+    <None Include="Resources\square-clicked.png" />
+    <None Include="Resources\start-clicked.png" />
+    <None Include="Resources\triangle-clicked.png" />
     <Content Include="tracks\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

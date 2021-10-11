@@ -186,6 +186,17 @@ namespace dmc3music
             }
         }
 
+        private void button9_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var ControllerForm = new ControllerConfig();
+                DialogResult result = ControllerForm.ShowDialog();
+                ControllerForm.Dispose();
+            }
+            catch { }
+        }
+
         #endregion
 
         #region Functionality Methods
@@ -547,5 +558,16 @@ namespace dmc3music
         }
 
         #endregion
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var StyleForm = new StyleSwitcher();
+                DialogResult result = StyleForm.ShowDialog();
+                StyleForm.Dispose();
+            }
+            catch { }
+        }
     }
 }
