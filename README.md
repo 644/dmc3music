@@ -1,4 +1,4 @@
-# DMC3 Music
+# DMC3 Tools
 Quick usage: https://youtu.be/of25whTptZQ
 
 ### How to setup
