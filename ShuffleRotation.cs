@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -18,17 +19,18 @@ namespace dmc3music
 
         private void ShuffleRotation_Load(object sender, EventArgs e)
         {
-            List<string> tracks = TrackReader.ReadTracks(Config.MusicPath, new string[] { "*.ogg" });
+            List<string> tracks = TrackReader.ReadTracks(Config.MusicPath, new string[] { "*" + Config.ExtensionType });
+
             HashSet<string> shuffleRotationSet = Config.ShuffleRotation.ToHashSet();
             foreach (string track in tracks)
             {
-                if (shuffleRotationSet.Contains(track))
+                if (shuffleRotationSet.Contains(Path.GetFileNameWithoutExtension(track)))
                 {
-                    tracksShuffling.Items.Add(track);
+                    tracksShuffling.Items.Add(Path.GetFileNameWithoutExtension(track));
                 }
                 else
                 {
-                    tracksRemaining.Items.Add(track);
+                    tracksRemaining.Items.Add(Path.GetFileNameWithoutExtension(track));
                 }
             }
         }

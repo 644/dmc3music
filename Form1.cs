@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -11,7 +13,7 @@ namespace dmc3music
 {
     public partial class Form1 : Form
     {
-        const int PROCESS_WM_READ = 0x0010;
+        private const int PROCESS_WM_READ = 0x0010;
 
         [DllImport("kernel32.dll")]
         public static extern IntPtr OpenProcess(int dwDesiredAccess, bool bInheritHandle, int dwProcessId);
@@ -33,6 +35,38 @@ namespace dmc3music
 
         private bool ConfigChanged { get; set; }
 
+        private void getGamePath()
+        {
+            string steamPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Valve\Steam", "InstallPath", null);
+            string libraryPath = Path.Combine(steamPath, "steamapps/libraryfolders.vdf");
+            string[] steamLibraries = File.ReadAllLines(libraryPath);
+            string gamePath = "";
+            string tmpGamePath = "";
+
+            foreach (string line in steamLibraries)
+            {
+                Match matchPath = Regex.Match(line, @"""(?<path>\w:\\\\.*)""");
+                if (matchPath.Success)
+                {
+                    tmpGamePath = matchPath.Groups["path"].Value.Replace(@"\\", @"\");
+                }
+                Match matchGame = Regex.Match(line, @"""(?<6550>\w:\\\\.*)""");
+                if (matchGame.Success)
+                {
+                    gamePath = tmpGamePath;
+                }
+            }
+
+
+            gamePath = Path.GetFullPath(Path.Combine(gamePath, "steamapps/common/Devil May Cry 3"));
+            if (Directory.Exists(gamePath))
+            {
+                Config.DMC3Path = gamePath;
+                DMC3MusicConfigWriter.WriteConfig(Config);
+                MessageBox.Show($"Automatically set the game path to '{gamePath}'. To change this, set the path in the options tab.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
         public Form1()
         {
             try
@@ -43,19 +77,37 @@ namespace dmc3music
             try
             {
                 Config = DMC3MusicConfigWriter.ReadConfig();
-                Player = new SongPlayer(Config);
-                SongChangeTimer = new Timer();
             }
             catch
             {
                 MessageBox.Show("Error", "There was a problem opening the config", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+
+            try
+            {
+
+                if (Config.DMC3Path == string.Empty || Config.DMC3Path == null || !Directory.Exists(Config.DMC3Path))
+                {
+                    getGamePath();
+                }
+            }
+            catch { }
+
+            try
+            {
+                Player = new SongPlayer(Config);
+                SongChangeTimer = new Timer();
+            }
+            catch { }
+
             try
             {
                 ConfigChanged = false;
                 volumeSlider1.VolumeChanged += OnVolumeSliderChanged;
-                GameStartTimer = new Timer();
-                GameStartTimer.Interval = 50;
+                GameStartTimer = new Timer
+                {
+                    Interval = 50
+                };
                 GameStartTimer.Tick += new EventHandler(GameStart);
                 GameStartTimer.Start();
             }
@@ -63,6 +115,41 @@ namespace dmc3music
             {
                 System.Windows.Forms.Application.Exit();
             }
+
+            try
+            {
+                if (!Directory.Exists("tracks"))
+                {
+                    MessageBox.Show("You will need to download the tracks from the Options tab", "Information", MessageBoxButtons.OK, MessageBoxIcon.None);
+                }
+            }
+            catch { }
+
+            /*            try
+                        {
+                            var MusicPath1 = Path.Combine(Config.DMC3Path, "native/sound");
+                            var MusicPath2 = Path.Combine(Config.DMC3Path, "sound");
+                            if (((string)Config.DMC3Path == string.Empty || Config.DMC3Path == null || !Directory.Exists(Config.DMC3Path)) && !Directory.Exists("tracks/"))
+                            {
+                                MessageBox.Show("You will need to set the DMC3 Path in the Options tab, or download the tracks folder from the github and add it to the root directory of this tool in order to play music", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            else if (Directory.Exists(MusicPath1))
+                            {
+                                Config.MusicPath = MusicPath1;
+                                Config.ExtensionType = ".ogg";
+                            }
+                            else if (Directory.Exists(MusicPath2))
+                            {
+                                Config.MusicPath = MusicPath2;
+                                Config.ExtensionType = ".bin";
+                            }
+                            else
+                            {
+                                Config.MusicPath = "tracks";
+                                Config.ExtensionType = ".ogg";
+                            }
+                        }
+                        catch { }*/
         }
 
         #region Form Control Methods
@@ -92,7 +179,8 @@ namespace dmc3music
             }
             catch { }
         }
-        void OnVolumeSliderChanged(object sender, EventArgs e)
+
+        private void OnVolumeSliderChanged(object sender, EventArgs e)
         {
             try
             {
@@ -105,7 +193,10 @@ namespace dmc3music
         {
             try
             {
-                if (ConfigChanged && !SaveConfigPrompt()) e.Cancel = true;
+                if (ConfigChanged && !SaveConfigPrompt())
+                {
+                    e.Cancel = true;
+                }
             }
             catch { }
         }
@@ -114,7 +205,7 @@ namespace dmc3music
         {
             try
             {
-                var shuffleForm = new ShuffleRotation(Config);
+                ShuffleRotation shuffleForm = new ShuffleRotation(Config);
                 DialogResult result = shuffleForm.ShowDialog();
                 if (result == DialogResult.OK)
                 {
@@ -139,7 +230,10 @@ namespace dmc3music
 
         private void pictureBox2_Click(object sender, EventArgs e)
         {
-            if (ConfigChanged && !SaveConfigPrompt()) return;
+            if (ConfigChanged && !SaveConfigPrompt())
+            {
+                return;
+            }
 
             DisableConfigControls();
 
@@ -164,8 +258,10 @@ namespace dmc3music
             {
                 ProcessHandle = OpenProcess(PROCESS_WM_READ, false, DMC3Process.Id);
                 BaseAddress = DMC3Process.MainModule.BaseAddress.ToInt32();
-                SongChangeTimer = new Timer();
-                SongChangeTimer.Interval = 50;
+                SongChangeTimer = new Timer
+                {
+                    Interval = 50
+                };
                 SongChangeTimer.Tick += new EventHandler(CheckSong);
                 SongChangeTimer.Start();
             }
@@ -190,7 +286,7 @@ namespace dmc3music
         {
             try
             {
-                var ControllerForm = new ControllerConfig();
+                ControllerConfig ControllerForm = new ControllerConfig();
                 DialogResult result = ControllerForm.ShowDialog();
                 ControllerForm.Dispose();
             }
@@ -218,8 +314,10 @@ namespace dmc3music
                 DisableConfigControls();
                 ProcessHandle = OpenProcess(PROCESS_WM_READ, false, DMC3Process.Id);
                 BaseAddress = DMC3Process.MainModule.BaseAddress.ToInt32();
-                SongChangeTimer = new Timer();
-                SongChangeTimer.Interval = 50;
+                SongChangeTimer = new Timer
+                {
+                    Interval = 50
+                };
                 SongChangeTimer.Tick += new EventHandler(CheckSong);
                 SongChangeTimer.Start();
             }
@@ -234,9 +332,13 @@ namespace dmc3music
             try
             {
                 if (Player.isPlaying)
+                {
                     label2.Text = "Playing: " + Player.OldTrack;
+                }
                 else
+                {
                     label2.Text = "Not Playing";
+                }
 
                 if (Process.GetProcessesByName("dmc3se").Length == 0)
                 {
@@ -284,12 +386,10 @@ namespace dmc3music
         {
             try
             {
-                DialogResult result = MessageBox.Show(
-                    "Would you like to save your current configuration settings?",
-                    "Save Configuration",
-                    MessageBoxButtons.YesNoCancel,
-                    MessageBoxIcon.Exclamation
-                );
+                DialogResult result = MessageBox.Show("Would you like to save your current configuration settings?",
+                                                      "Save Configuration",
+                                                      MessageBoxButtons.YesNoCancel,
+                                                      MessageBoxIcon.Exclamation);
 
                 if (result == DialogResult.Yes)
                 {
@@ -360,7 +460,9 @@ namespace dmc3music
                 {
                     textBox1.Text = folderBrowserDialog1.SelectedPath;
                     Config.DMC3Path = textBox1.Text;
-                    ConfigChanged = true;
+                    DMC3MusicConfigWriter.WriteConfig(Config);
+                    Application.Restart();
+                    Environment.Exit(0);
                 }
             }
             catch { }
@@ -370,9 +472,9 @@ namespace dmc3music
         {
             try
             {
-                var fileName = comboBox1.SelectedItem.ToString();
-                var source = Path.Combine("./saves", fileName);
-                var destination = Path.Combine(Config.DMC3Path, "save0.sav");
+                string fileName = comboBox1.SelectedItem.ToString();
+                string source = Path.Combine("./saves", fileName);
+                string destination = Path.Combine(Config.DMC3Path, "save0.sav");
 
                 File.Copy(source, destination, true);
                 label7.Text = $"Copied '{fileName}' Successfully!";
@@ -394,11 +496,15 @@ namespace dmc3music
 
         private void button2_Click(object sender, EventArgs e)
         {
-            SaveFileDialog dlg = new SaveFileDialog();
-            dlg.Filter = "Livesplit Split File (*.lss)|*.lss";
+            SaveFileDialog dlg = new SaveFileDialog
+            {
+                Filter = "Livesplit Split File (*.lss)|*.lss"
+            };
 
             if (dlg.ShowDialog() != DialogResult.OK)
+            {
                 return;
+            }
 
             XmlWriterSettings settings = new XmlWriterSettings
             {
@@ -478,11 +584,15 @@ namespace dmc3music
 
         private void button3_Click(object sender, EventArgs e)
         {
-            SaveFileDialog dlg = new SaveFileDialog();
-            dlg.Filter = "Livesplit Split File (*.lss)|*.lss";
+            SaveFileDialog dlg = new SaveFileDialog
+            {
+                Filter = "Livesplit Split File (*.lss)|*.lss"
+            };
 
             if (dlg.ShowDialog() != DialogResult.OK)
+            {
                 return;
+            }
 
             XmlWriterSettings settings = new XmlWriterSettings
             {
@@ -563,7 +673,7 @@ namespace dmc3music
         {
             try
             {
-                var StyleForm = new StyleSwitcher();
+                StyleSwitcher StyleForm = new StyleSwitcher();
                 DialogResult result = StyleForm.ShowDialog();
                 StyleForm.Dispose();
             }
@@ -574,7 +684,7 @@ namespace dmc3music
         {
             try
             {
-                if ((string)Config.DMC3Path == string.Empty || Config.DMC3Path == null || !Directory.Exists(Config.DMC3Path))
+                if (Config.DMC3Path == string.Empty || Config.DMC3Path == null || !Directory.Exists(Config.DMC3Path))
                 {
                     MessageBox.Show("Please make sure the path to DMC3 is correct in the Options tab", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -588,7 +698,8 @@ namespace dmc3music
                         File.Copy(filename, dest, true);
                         label9.Text = "Successfully Installed!";
                     }
-                } else
+                }
+                else
                 {
                     string dinputSrc = "./styleswitcher/dinput8.dll";
                     string dest = Path.Combine(Config.DMC3Path, "dinput8.dll");
@@ -596,9 +707,32 @@ namespace dmc3music
                     label9.Text = "Successfully Uninstalled!";
                 }
             }
-            catch {
+            catch
+            {
                 label9.Text = "Failed To Install!";
             }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                CheckUpdates UpdateForm = new CheckUpdates();
+                DialogResult result = UpdateForm.ShowDialog();
+                UpdateForm.Dispose();
+            }
+            catch { }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                GetMusic MusicForm = new GetMusic();
+                DialogResult result = MusicForm.ShowDialog();
+                MusicForm.Dispose();
+            }
+            catch { }
         }
     }
 }

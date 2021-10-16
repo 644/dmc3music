@@ -8,7 +8,7 @@ namespace dmc3music
     {
         public static List<string> ReadTracks(string trackPath, string[] fileTypes)
         {
-            var tracks = new List<string>();
+            List<string> tracks = new List<string>();
             foreach (string fileType in fileTypes)
             {
                 foreach (string filename in Directory.EnumerateFiles(trackPath, fileType))

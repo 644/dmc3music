@@ -463,7 +463,9 @@
 
         #endregion
 
+#pragma warning disable CS0169 // The field 'ControllerConfig.button1' is never used
         private System.Windows.Forms.Button button1;
+#pragma warning restore CS0169 // The field 'ControllerConfig.button1' is never used
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label1;

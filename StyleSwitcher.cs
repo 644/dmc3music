@@ -1,14 +1,9 @@
-﻿using System;
+﻿using PeanutButter.INI;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using PeanutButter.INI;
 
 namespace dmc3music
 {
@@ -35,23 +30,25 @@ namespace dmc3music
         {
             InitializeComponent();
             Config = DMC3MusicConfigWriter.ReadConfig();
-            if ((string)Config.DMC3Path == string.Empty || Config.DMC3Path == null || !Directory.Exists(Config.DMC3Path))
+            if (Config.DMC3Path == string.Empty || Config.DMC3Path == null || !Directory.Exists(Config.DMC3Path))
             {
                 MessageBox.Show("Please make sure the path to DMC3 is correct in the Options tab", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                this.Dispose();
+                Dispose();
             }
 
             styleLoc = Path.Combine(Config.DMC3Path, "StyleSwitcher.ini");
             if (File.Exists(styleLoc))
             {
                 styleIni = new INIFile(styleLoc);
-            } else if(File.Exists("./styleswitcher/StyleSwitcher.ini"))
+            }
+            else if (File.Exists("./styleswitcher/StyleSwitcher.ini"))
             {
                 styleIni = new INIFile("./styleswitcher/StyleSwitcher.ini");
-            } else
+            }
+            else
             {
                 MessageBox.Show("Could not load any style switcher ini files", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                this.Dispose();
+                Dispose();
             }
 
             getIniConfig();
@@ -94,7 +91,7 @@ namespace dmc3music
 
             arcadeStyle = styleIni.GetValue("GAME", "Arcade.Style");
             int styleIndex = 0;
-            styleIndex = Int32.Parse(arcadeStyle);
+            styleIndex = int.Parse(arcadeStyle);
             comboBox4.SelectedIndex = styleIndex;
 
             arcadeRoom = styleIni.GetValue("GAME", "Arcade.Room");
@@ -103,21 +100,21 @@ namespace dmc3music
 
         private void button2_Click(object sender, EventArgs e)
         {
-            var styleDll = Path.Combine(Config.DMC3Path, "StyleSwitcher.dll");
+            string styleDll = Path.Combine(Config.DMC3Path, "StyleSwitcher.dll");
             if (!File.Exists(styleDll))
             {
                 foreach (string filePath in Directory.EnumerateFiles("./styleswitcher"))
                 {
                     string fileName = filePath.Split('\\').Last();
-                    var dest = Path.Combine(Config.DMC3Path, fileName);
+                    string dest = Path.Combine(Config.DMC3Path, fileName);
                     File.Copy(filePath, dest, true);
                 }
-                var installLoc = Path.Combine(Config.DMC3Path, "install.bat");
+                string installLoc = Path.Combine(Config.DMC3Path, "install.bat");
                 System.Diagnostics.Process.Start(installLoc);
             }
 
             styleIni.WrapValueInQuotes = false;
-            
+
             styleIni["DISPLAY"]["Mode"] = styleWindowed;
             styleIni["SOUND"]["DisableSoundDriver"] = styleBGM;
             styleIni["GAME"]["BossRush"] = bossRush;
@@ -159,7 +156,8 @@ namespace dmc3music
         private void comboBox4_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Arcade Style
-            if (stylesDict.TryGetValue(comboBox4.SelectedItem.ToString(), out string tmpStyle)) {
+            if (stylesDict.TryGetValue(comboBox4.SelectedItem.ToString(), out string tmpStyle))
+            {
                 arcadeStyle = tmpStyle;
             }
         }

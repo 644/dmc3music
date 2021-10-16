@@ -15,6 +15,7 @@ namespace dmc3music
         public List<string> ShuffleRotation { get; set; }
         public int BattleTimer { get; set; }
         public int AmbientTimer { get; set; }
+        public string ExtensionType { get; set; } = ".ogg";
 
         internal object GetEnumerator()
         {
@@ -24,11 +25,15 @@ namespace dmc3music
 
     public static class DMC3MusicConfigWriter
     {
-        public static DMC3MusicConfig ReadConfig() =>
-            JsonSerializer.Deserialize<DMC3MusicConfig>(File.ReadAllText("./Config/config.json"));
+        public static DMC3MusicConfig ReadConfig()
+        {
+            return JsonSerializer.Deserialize<DMC3MusicConfig>(File.ReadAllText("./Config/config.json"));
+        }
 
-        public static void WriteConfig(DMC3MusicConfig config) =>
+        public static void WriteConfig(DMC3MusicConfig config)
+        {
             File.WriteAllText("./Config/config.json", JsonSerializer.Serialize(config));
+        }
 
         public static DMC3MusicConfig ResetConfig()
         {
