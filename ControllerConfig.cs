@@ -1,9 +1,9 @@
-﻿using System;
+﻿using SharpDX.DirectInput;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using SharpDX.DirectInput;
 
 namespace dmc3music
 {
@@ -61,13 +61,14 @@ namespace dmc3music
         {
             InitializeComponent();
             Config = DMC3MusicConfigWriter.ReadConfig();
-            if ((string)Config.DMC3Path == string.Empty || Config.DMC3Path == null || !Directory.Exists(Config.DMC3Path))
+            if (Config.DMC3Path == string.Empty || Config.DMC3Path == null || !Directory.Exists(Config.DMC3Path))
             {
                 MessageBox.Show("Please make sure the path to DMC3 is correct in the Options tab", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                this.Dispose();
+                Dispose();
             }
-            var controllers = directInput.GetDevices(DeviceType.Gamepad, DeviceEnumerationFlags.AllDevices);
-            foreach (var ctrl in controllers) {
+            IList<DeviceInstance> controllers = directInput.GetDevices(DeviceType.Gamepad, DeviceEnumerationFlags.AllDevices);
+            foreach (DeviceInstance ctrl in controllers)
+            {
                 comboBox1.Items.Add(ctrl.InstanceName);
                 controllerDict.Add(ctrl.InstanceName, ctrl.InstanceGuid);
             }
@@ -82,17 +83,18 @@ namespace dmc3music
                 {
                     contents += $"{kp.Key}={kp.Value}\r\n";
                 }
-                var dest = Path.Combine(Config.DMC3Path, "DMC3SE.ini");
+                string dest = Path.Combine(Config.DMC3Path, "DMC3SE.ini");
                 File.WriteAllText(dest, contents);
                 MessageBox.Show($"Successfully written the controller config to {dest}", "Controller Config", MessageBoxButtons.OK, MessageBoxIcon.None);
-            } catch { }
+            }
+            catch { }
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             joystickName = comboBox1.SelectedItem.ToString();
 
-            if(!controllerDict.TryGetValue(joystickName, out Guid tmpGuid))
+            if (!controllerDict.TryGetValue(joystickName, out Guid tmpGuid))
             {
                 return;
             }
@@ -100,8 +102,8 @@ namespace dmc3music
             joystickGuid = tmpGuid;
             joystick = new Joystick(directInput, joystickGuid);
 
-            var allEffects = joystick.GetEffects();
-            foreach (var effectInfo in allEffects)
+            IList<EffectInfo> allEffects = joystick.GetEffects();
+            foreach (EffectInfo effectInfo in allEffects)
             {
                 Console.WriteLine("Effect available {0}", effectInfo.Name);
             }
@@ -113,8 +115,8 @@ namespace dmc3music
         private void PollController(object sender, EventArgs e)
         {
             joystick.Poll();
-            var datas = joystick.GetBufferedData();
-            foreach (var state in datas)
+            JoystickUpdate[] datas = joystick.GetBufferedData();
+            foreach (JoystickUpdate state in datas)
             {
                 string button = state.Offset.ToString();
                 if (button.Contains("Buttons") && !InputForm.IsDisposed)
@@ -148,8 +150,10 @@ namespace dmc3music
             }
             InputForm = new MessageForm(displayKey);
             InputForm.Show(this);
-            ControllerTimer = new Timer();
-            ControllerTimer.Interval = 10;
+            ControllerTimer = new Timer
+            {
+                Interval = 10
+            };
             ControllerTimer.Tick -= new EventHandler(PollController);
             ControllerTimer.Tick += new EventHandler(PollController);
             ControllerTimer.Start();
@@ -293,7 +297,8 @@ namespace dmc3music
             if (checkBox1.Checked)
             {
                 ControllerKeysMap["L<->R"] = 1;
-            } else
+            }
+            else
             {
                 ControllerKeysMap["L<->R"] = 0;
             }

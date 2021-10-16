@@ -3,6 +3,7 @@ using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace dmc3music
 {
@@ -26,11 +27,11 @@ namespace dmc3music
 
         public bool isPlaying { get; set; } = false;
 
+        public bool isFading { get; set; } = false;
+
         public float OldVolume { get; set; } = 1.0f;
 
         public double TrackPos { get; set; } = 0.0d;
-
-        public int TrackPercent { get; set; } = 0;
 
         public Dictionary<string, double> TrackPositions { get; set; } = new Dictionary<string, double>();
 
@@ -51,6 +52,7 @@ namespace dmc3music
 
         public void FadeOut()
         {
+            isFading = true;
             if (fadeTimer == 0)
             {
                 fade.BeginFadeOut(2000);
@@ -92,7 +94,7 @@ namespace dmc3music
                     Console.WriteLine(track);
                     OutputDevice.Dispose();
                     OutputDevice = new WaveOut();
-                    var vorbis = new VorbisWaveReader(@"tracks/" + track);
+                    VorbisWaveReader vorbis = new VorbisWaveReader(Path.Combine(Config.MusicPath, track + Config.ExtensionType));
                     OutputDevice.Init(vorbis);
                     OutputDevice.Play();
                 }
@@ -114,30 +116,41 @@ namespace dmc3music
                         TrackPositions.Add(OldTrack, TrackPos);
                     }
 
+                    if (isFading)
+                    {
+                        if (fadeTimer++ >= 10)
+                        {
+                            Stop();
+                        }
+                        return;
+                    }
+
                     if (roomId != RoomId)
                     {
                         FadeOut();
                         return;
                     }
 
-                    if (fadeTimer > 0)
-                    {
-                        fadeTimer = 0;
-                    }
-
                     if (enemyCount > 0)
                     {
                         EnemiesGoneTimer = 0;
-                        if (AmbientIsPlaying && Config.RoomTracks.TryGetValue(roomId.ToString() + "_" + missionNumber.ToString(), out _)) Stop();
+                        if (AmbientIsPlaying && Config.RoomTracks.TryGetValue(roomId.ToString() + "_" + missionNumber.ToString(), out _))
+                        {
+                            Stop();
+                        }
                     }
                     else if (!AmbientIsPlaying)
                     {
                         if (EnemiesGoneTimer++ >= 120)
                         {
                             if (OutputDevice.Volume >= 0.01f)
+                            {
                                 OutputDevice.Volume -= 0.01f;
+                            }
                             else if (OldVolume > 0.0f)
+                            {
                                 Stop();
+                            }
                         }
                     }
 
@@ -165,15 +178,15 @@ namespace dmc3music
 
                 OutputDevice.Dispose();
                 OutputDevice = new WaveOut();
-                vorbis = new VorbisWaveReader(@"tracks/" + track);
+
+                vorbis = new VorbisWaveReader(Path.Combine(Config.MusicPath, track + Config.ExtensionType));
                 int TrackLength = Convert.ToInt32(vorbis.TotalTime.TotalSeconds);
 
                 try
                 {
                     long currentTime = 0;
-                    long startTime = 0;
 
-                    if (TrackStartTime.TryGetValue(OldTrack, out startTime))
+                    if (TrackStartTime.TryGetValue(OldTrack, out long startTime))
                     {
                         currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                     }
@@ -214,28 +227,32 @@ namespace dmc3music
                 {
                     TrackStartTime.Add(OldTrack, timeStarted);
                 }
-                Console.WriteLine(track);
             }
         }
 
         public void Volume(float vol)
         {
             if (vol < 0.0f)
+            {
                 OutputDevice.Volume = 0.0f;
+            }
             else
+            {
                 OutputDevice.Volume = vol;
+            }
 
             OldVolume = OutputDevice.Volume;
         }
 
         public void Stop()
         {
+            isPlaying = false;
             if (OutputDevice.PlaybackState == PlaybackState.Playing)
             {
                 OutputDevice.Stop();
-                isPlaying = false;
                 AmbientIsPlaying = false;
                 fadeTimer = 0;
+                isFading = false;
             }
         }
     }
