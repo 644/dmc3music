@@ -57,6 +57,7 @@
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox24)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox23)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox22)).BeginInit();
@@ -138,7 +139,7 @@
             // pictureBox24
             // 
             this.pictureBox24.Image = global::dmc3music.Properties.Resources.triangle_clicked;
-            this.pictureBox24.Location = new System.Drawing.Point(508, 177);
+            this.pictureBox24.Location = new System.Drawing.Point(505, 164);
             this.pictureBox24.Name = "pictureBox24";
             this.pictureBox24.Size = new System.Drawing.Size(46, 46);
             this.pictureBox24.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -160,7 +161,7 @@
             // pictureBox22
             // 
             this.pictureBox22.Image = global::dmc3music.Properties.Resources.square_clicked;
-            this.pictureBox22.Location = new System.Drawing.Point(462, 225);
+            this.pictureBox22.Location = new System.Drawing.Point(459, 212);
             this.pictureBox22.Name = "pictureBox22";
             this.pictureBox22.Size = new System.Drawing.Size(46, 46);
             this.pictureBox22.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -248,7 +249,7 @@
             // pictureBox14
             // 
             this.pictureBox14.Image = global::dmc3music.Properties.Resources.cross_clicked;
-            this.pictureBox14.Location = new System.Drawing.Point(508, 273);
+            this.pictureBox14.Location = new System.Drawing.Point(505, 260);
             this.pictureBox14.Name = "pictureBox14";
             this.pictureBox14.Size = new System.Drawing.Size(46, 46);
             this.pictureBox14.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -259,7 +260,7 @@
             // pictureBox13
             // 
             this.pictureBox13.Image = global::dmc3music.Properties.Resources.circle_clicked;
-            this.pictureBox13.Location = new System.Drawing.Point(554, 225);
+            this.pictureBox13.Location = new System.Drawing.Point(551, 212);
             this.pictureBox13.Name = "pictureBox13";
             this.pictureBox13.Size = new System.Drawing.Size(46, 46);
             this.pictureBox13.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -276,6 +277,7 @@
             this.pictureBox12.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox12.TabIndex = 14;
             this.pictureBox12.TabStop = false;
+            this.pictureBox12.Visible = false;
             this.pictureBox12.Click += new System.EventHandler(this.pictureBox12_Click);
             // 
             // pictureBox11
@@ -287,6 +289,7 @@
             this.pictureBox11.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox11.TabIndex = 13;
             this.pictureBox11.TabStop = false;
+            this.pictureBox11.Visible = false;
             this.pictureBox11.Click += new System.EventHandler(this.pictureBox11_Click);
             // 
             // pictureBox10
@@ -298,6 +301,7 @@
             this.pictureBox10.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox10.TabIndex = 12;
             this.pictureBox10.TabStop = false;
+            this.pictureBox10.Visible = false;
             this.pictureBox10.Click += new System.EventHandler(this.pictureBox10_Click);
             // 
             // pictureBox9
@@ -309,6 +313,7 @@
             this.pictureBox9.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox9.TabIndex = 11;
             this.pictureBox9.TabStop = false;
+            this.pictureBox9.Visible = false;
             this.pictureBox9.Click += new System.EventHandler(this.pictureBox9_Click);
             // 
             // pictureBox8
@@ -320,6 +325,7 @@
             this.pictureBox8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox8.TabIndex = 10;
             this.pictureBox8.TabStop = false;
+            this.pictureBox8.Visible = false;
             this.pictureBox8.Click += new System.EventHandler(this.pictureBox8_Click);
             // 
             // pictureBox7
@@ -331,6 +337,7 @@
             this.pictureBox7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox7.TabIndex = 9;
             this.pictureBox7.TabStop = false;
+            this.pictureBox7.Visible = false;
             this.pictureBox7.Click += new System.EventHandler(this.pictureBox7_Click);
             // 
             // pictureBox6
@@ -342,6 +349,7 @@
             this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox6.TabIndex = 8;
             this.pictureBox6.TabStop = false;
+            this.pictureBox6.Visible = false;
             this.pictureBox6.Click += new System.EventHandler(this.pictureBox6_Click);
             // 
             // pictureBox5
@@ -353,55 +361,71 @@
             this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox5.TabIndex = 7;
             this.pictureBox5.TabStop = false;
+            this.pictureBox5.Visible = false;
             this.pictureBox5.Click += new System.EventHandler(this.pictureBox5_Click);
             // 
             // pictureBox4
             // 
             this.pictureBox4.Image = global::dmc3music.Properties.Resources.circle;
-            this.pictureBox4.Location = new System.Drawing.Point(554, 225);
+            this.pictureBox4.Location = new System.Drawing.Point(551, 212);
             this.pictureBox4.Name = "pictureBox4";
             this.pictureBox4.Size = new System.Drawing.Size(46, 46);
             this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox4.TabIndex = 6;
             this.pictureBox4.TabStop = false;
+            this.pictureBox4.Visible = false;
             this.pictureBox4.Click += new System.EventHandler(this.pictureBox4_Click);
             // 
             // pictureBox3
             // 
             this.pictureBox3.Image = global::dmc3music.Properties.Resources.cross;
-            this.pictureBox3.Location = new System.Drawing.Point(508, 273);
+            this.pictureBox3.Location = new System.Drawing.Point(505, 260);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(46, 46);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox3.TabIndex = 5;
             this.pictureBox3.TabStop = false;
+            this.pictureBox3.Visible = false;
             this.pictureBox3.Click += new System.EventHandler(this.pictureBox3_Click);
             // 
             // pictureBox2
             // 
             this.pictureBox2.Image = global::dmc3music.Properties.Resources.square;
-            this.pictureBox2.Location = new System.Drawing.Point(462, 225);
+            this.pictureBox2.Location = new System.Drawing.Point(459, 212);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(46, 46);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox2.TabIndex = 4;
             this.pictureBox2.TabStop = false;
+            this.pictureBox2.Visible = false;
             this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
             // 
             // pictureBox1
             // 
             this.pictureBox1.Image = global::dmc3music.Properties.Resources.triangle;
-            this.pictureBox1.Location = new System.Drawing.Point(508, 177);
+            this.pictureBox1.Location = new System.Drawing.Point(505, 164);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(46, 46);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.Visible = false;
             this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(388, 395);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(224, 26);
+            this.label2.TabIndex = 29;
+            this.label2.Text = "Click each button, then the button\r\non your controller and click \"Generate Config" +
+    "\"";
             // 
             // ControllerConfig
             // 
             this.ClientSize = new System.Drawing.Size(624, 441);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.pictureBox24);
             this.Controls.Add(this.pictureBox23);
             this.Controls.Add(this.pictureBox22);
@@ -432,6 +456,7 @@
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.button2);
             this.Name = "ControllerConfig";
+            this.Load += new System.EventHandler(this.ControllerConfig_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox24)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox23)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox22)).EndInit();
@@ -495,5 +520,6 @@
         private System.Windows.Forms.PictureBox pictureBox22;
         private System.Windows.Forms.PictureBox pictureBox23;
         private System.Windows.Forms.PictureBox pictureBox24;
+        private System.Windows.Forms.Label label2;
     }
 }

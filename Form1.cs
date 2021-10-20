@@ -25,6 +25,8 @@ namespace dmc3music
 
         private Timer SongChangeTimer { get; set; }
 
+        private Timer SongProgressTimer { get; set; }
+
         private Timer GameStartTimer { get; set; }
 
         private SongPlayer Player { get; set; }
@@ -34,6 +36,10 @@ namespace dmc3music
         private int BaseAddress { get; set; }
 
         private bool ConfigChanged { get; set; }
+
+        private bool newTrack { get; set; } = true;
+
+        private string outMaxPos { get; set; }
 
         private void getGamePath()
         {
@@ -97,6 +103,7 @@ namespace dmc3music
             {
                 Player = new SongPlayer(Config);
                 SongChangeTimer = new Timer();
+                SongProgressTimer = new Timer();
             }
             catch { }
 
@@ -264,6 +271,13 @@ namespace dmc3music
                 };
                 SongChangeTimer.Tick += new EventHandler(CheckSong);
                 SongChangeTimer.Start();
+
+                SongProgressTimer = new Timer
+                {
+                    Interval = 100
+                };
+                SongProgressTimer.Tick += new EventHandler(GetSongProgress);
+                SongProgressTimer.Start();
             }
             catch { }
         }
@@ -273,6 +287,7 @@ namespace dmc3music
             try
             {
                 SongChangeTimer.Stop();
+                SongProgressTimer.Stop();
                 Player.Stop();
                 EnableConfigControls();
             }
@@ -320,6 +335,13 @@ namespace dmc3music
                 };
                 SongChangeTimer.Tick += new EventHandler(CheckSong);
                 SongChangeTimer.Start();
+
+                SongProgressTimer = new Timer
+                {
+                    Interval = 100
+                };
+                SongProgressTimer.Tick += new EventHandler(GetSongProgress);
+                SongProgressTimer.Start();
             }
             catch
             {
@@ -327,23 +349,48 @@ namespace dmc3music
             }
         }
 
+        private void GetSongProgress(object sender, EventArgs e)
+        {
+            if (Player.isPlaying)
+            {
+                label2.Text = $"Playing: {Player.OldTrack}";
+                TimeSpan currentPos = TimeSpan.FromMilliseconds(Player.TrackPos);
+
+                if (newTrack)
+                {
+                    newTrack = false;
+                    TimeSpan maxPos = TimeSpan.FromSeconds(Player.TrackLength);
+                    outMaxPos = maxPos.ToString(@"m\:ss\.ff");
+                }
+
+                string outCurrentPos;
+
+                if (currentPos.Minutes > 0)
+                {
+                    outCurrentPos = currentPos.ToString(@"m\:ss\.ff");
+                }
+                else
+                {
+                    outCurrentPos = currentPos.ToString(@"ss\.ff");
+                }
+
+                label2.Text = $"Playing : {Player.OldTrack} ({outCurrentPos}/{outMaxPos})";
+            }
+            else
+            {
+                label2.Text = "Not Playing";
+            }
+        }
+
         private void CheckSong(object sender, EventArgs e)
         {
             try
             {
-                if (Player.isPlaying)
-                {
-                    label2.Text = "Playing: " + Player.OldTrack;
-                }
-                else
-                {
-                    label2.Text = "Not Playing";
-                }
-
                 if (Process.GetProcessesByName("dmc3se").Length == 0)
                 {
                     Player.Stop();
                     SongChangeTimer.Stop();
+                    SongProgressTimer.Stop();
                     GameStartTimer.Start();
                     return;
                 }
@@ -370,6 +417,8 @@ namespace dmc3music
                 int enemyCountPtr2 = -1;
                 int missionNumber = -1;
                 int isLoading = -1;
+                int vanguardSpawned = -1;
+
                 ReadProcessMemory(ProcessHandle, BaseAddress + 0x76B150, ref roomId, sizeof(int), 0);
                 ReadProcessMemory(ProcessHandle, BaseAddress + 0x76B860 + 0xC40 + 0x8, ref enemyCountPtr1, sizeof(int), 0);
                 ReadProcessMemory(ProcessHandle, enemyCountPtr1 + 0x18, ref enemyCountPtr2, sizeof(int), 0);
@@ -377,7 +426,17 @@ namespace dmc3music
                 ReadProcessMemory(ProcessHandle, BaseAddress + 0x76B148, ref missionNumber, sizeof(int), 0);
                 ReadProcessMemory(ProcessHandle, BaseAddress + 0x205BCB8, ref isLoading, sizeof(int), 0);
 
+                if (missionNumber == 2)
+                {
+                    ReadProcessMemory(ProcessHandle, BaseAddress + 0x7EE568, ref vanguardSpawned, sizeof(int), 0);
+                    if (vanguardSpawned == 66)
+                    {
+                        roomId = 66;
+                    }
+                }
+
                 Player.PlayRoomSong(roomId, enemyCount, missionNumber);
+                newTrack = true;
             }
             catch { }
         }

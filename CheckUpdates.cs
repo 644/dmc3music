@@ -34,7 +34,6 @@ namespace dmc3music
             catch (Exception err)
             {
                 label1.Text = "Could not check for updates";
-                Console.WriteLine(err);
             }
 
             RecenterLabel1();
@@ -79,10 +78,7 @@ namespace dmc3music
 
                 System.Windows.Forms.Application.Exit();
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
+            catch { }
         }
 
         private void WcOnDownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
