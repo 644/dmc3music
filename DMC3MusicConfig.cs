@@ -9,8 +9,8 @@ namespace dmc3music
     {
         public string MusicPath { get; set; }
         public string DMC3Path { get; set; }
-        public Dictionary<string, string> RoomTracks { get; set; }
-        public Dictionary<string, string> AmbientTracks { get; set; }
+        public Dictionary<string, List<string>> RoomTracks { get; set; }
+        public Dictionary<string, List<string>> AmbientTracks { get; set; }
         public bool Shuffle { get; set; }
         public List<string> ShuffleRotation { get; set; }
         public int BattleTimer { get; set; }

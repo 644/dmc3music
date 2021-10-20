@@ -56,6 +56,7 @@ namespace dmc3music
         public PictureBox picClicked { get; set; }
         public string currentKey { get; set; } = "Start";
         public Form InputForm { get; set; }
+        public bool DisplayTriggers { get; set; } = false;
 
         public ControllerConfig()
         {
@@ -102,11 +103,11 @@ namespace dmc3music
             joystickGuid = tmpGuid;
             joystick = new Joystick(directInput, joystickGuid);
 
-            IList<EffectInfo> allEffects = joystick.GetEffects();
-            foreach (EffectInfo effectInfo in allEffects)
-            {
-                Console.WriteLine("Effect available {0}", effectInfo.Name);
-            }
+            /*            IList<EffectInfo> allEffects = joystick.GetEffects();
+                        foreach (EffectInfo effectInfo in allEffects)
+                        {
+                            Console.WriteLine("Effect available {0}", effectInfo.Name);
+                        }*/
 
             joystick.Properties.BufferSize = 128;
             joystick.Acquire();
@@ -121,7 +122,6 @@ namespace dmc3music
                 string button = state.Offset.ToString();
                 if (button.Contains("Buttons") && !InputForm.IsDisposed)
                 {
-                    Console.WriteLine(state);
                     if (ButtonsAsNums.TryGetValue(button, out int b))
                     {
                         ControllerKeysMap[currentKey] = b;
@@ -264,9 +264,9 @@ namespace dmc3music
             pictureBox5.Visible = true;
             pictureBox6.Visible = true;
             pictureBox7.Visible = true;
-            pictureBox8.Visible = true;
+            pictureBox8.Visible = DisplayTriggers;
             pictureBox9.Visible = true;
-            pictureBox10.Visible = true;
+            pictureBox10.Visible = DisplayTriggers;
             pictureBox11.Visible = true;
             pictureBox12.Visible = true;
             pictureBox13.Visible = false;
@@ -289,7 +289,13 @@ namespace dmc3music
             {
                 ControllerKeysMap["L2"] = 255;
                 ControllerKeysMap["R2"] = 255;
+                DisplayTriggers = false;
             }
+            else
+            {
+                DisplayTriggers = true;
+            }
+            refreshBoxes();
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -302,6 +308,25 @@ namespace dmc3music
             {
                 ControllerKeysMap["L<->R"] = 0;
             }
+        }
+
+        private void ControllerConfig_Load(object sender, EventArgs e)
+        {
+            DialogResult res = MessageBox.Show("Configure for an Xbox controller? (Click Yes if emulated as well, i.e. DS4Windows/Xinput Plus)", "Controller Config", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (res == DialogResult.Yes)
+            {
+                DisplayTriggers = false;
+                checkBox2.Checked = true;
+                checkBox1.Checked = true;
+                ControllerKeysMap["L2"] = 255;
+                ControllerKeysMap["R2"] = 255;
+                ControllerKeysMap["L<->R"] = 1;
+            }
+            else
+            {
+                DisplayTriggers = true;
+            }
+            refreshBoxes();
         }
     }
 }

@@ -46,6 +46,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.comboBox4 = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // checkBox1
@@ -114,7 +115,7 @@
             // checkBox4
             // 
             this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(12, 304);
+            this.checkBox4.Location = new System.Drawing.Point(12, 302);
             this.checkBox4.Name = "checkBox4";
             this.checkBox4.Size = new System.Drawing.Size(60, 17);
             this.checkBox4.TabIndex = 5;
@@ -135,7 +136,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(131, 401);
+            this.button2.Location = new System.Drawing.Point(136, 417);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(92, 23);
             this.button2.TabIndex = 7;
@@ -238,7 +239,7 @@
             "18",
             "19",
             "20"});
-            this.comboBox3.Location = new System.Drawing.Point(131, 347);
+            this.comboBox3.Location = new System.Drawing.Point(136, 347);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(92, 21);
             this.comboBox3.TabIndex = 18;
@@ -247,7 +248,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(128, 331);
+            this.label4.Location = new System.Drawing.Point(133, 331);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(79, 13);
             this.label4.TabIndex = 19;
@@ -264,7 +265,7 @@
             "Royalguard",
             "Quicksilver",
             "Doppelganger"});
-            this.comboBox4.Location = new System.Drawing.Point(12, 401);
+            this.comboBox4.Location = new System.Drawing.Point(15, 417);
             this.comboBox4.Name = "comboBox4";
             this.comboBox4.Size = new System.Drawing.Size(92, 21);
             this.comboBox4.TabIndex = 21;
@@ -273,17 +274,27 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 385);
+            this.label5.Location = new System.Drawing.Point(15, 401);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(67, 13);
             this.label5.TabIndex = 22;
             this.label5.Text = "Arcade Style";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(234, 422);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(0, 13);
+            this.label6.TabIndex = 24;
+            this.label6.Visible = false;
             // 
             // StyleSwitcher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(398, 450);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.comboBox4);
             this.Controls.Add(this.label4);
@@ -328,5 +339,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox comboBox4;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
     }
 }

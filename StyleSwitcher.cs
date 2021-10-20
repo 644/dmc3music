@@ -100,36 +100,46 @@ namespace dmc3music
 
         private void button2_Click(object sender, EventArgs e)
         {
-            string styleDll = Path.Combine(Config.DMC3Path, "StyleSwitcher.dll");
-            if (!File.Exists(styleDll))
+            try
             {
-                foreach (string filePath in Directory.EnumerateFiles("./styleswitcher"))
+                string styleDll = Path.Combine(Config.DMC3Path, "StyleSwitcher.dll");
+                if (!File.Exists(styleDll))
                 {
-                    string fileName = filePath.Split('\\').Last();
-                    string dest = Path.Combine(Config.DMC3Path, fileName);
-                    File.Copy(filePath, dest, true);
+                    foreach (string filePath in Directory.EnumerateFiles("./styleswitcher"))
+                    {
+                        string fileName = filePath.Split('\\').Last();
+                        string dest = Path.Combine(Config.DMC3Path, fileName);
+                        File.Copy(filePath, dest, true);
+                    }
+                    string installLoc = Path.Combine(Config.DMC3Path, "install.bat");
+                    System.Diagnostics.Process.Start(installLoc);
                 }
-                string installLoc = Path.Combine(Config.DMC3Path, "install.bat");
-                System.Diagnostics.Process.Start(installLoc);
+
+                styleIni.WrapValueInQuotes = false;
+
+                styleIni["DISPLAY"]["Mode"] = styleWindowed;
+                styleIni["SOUND"]["DisableSoundDriver"] = styleBGM;
+                styleIni["GAME"]["BossRush"] = bossRush;
+                styleIni["GAME"]["Arcade"] = arcadeMode;
+                styleIni["INPUT"]["Hotkeys"] = hotKeys;
+                styleIni["DISPLAY"]["DisableBlurShader"] = blurShader;
+                styleIni["DISPLAY"]["DisableFogShader"] = fogShader;
+                styleIni["DISPLAY"]["DisableShadowEngine"] = shadowEngine;
+                styleIni["DISPLAY"]["GammaCorrection"] = gammaCorrection;
+                styleIni["DISPLAY"]["Resolution"] = styleResolution;
+                styleIni["GAME"]["Arcade.Mission"] = arcadeMission;
+                styleIni["GAME"]["Arcade.Style"] = arcadeStyle;
+                styleIni["GAME"]["Arcade.Room"] = arcadeRoom;
+
+                File.WriteAllText(styleLoc, styleIni.ToString().Replace("BGM[]={", "BGM[] = {"));
+                label6.Text = "Installed Successfully!";
+                label6.Visible = true;
             }
-
-            styleIni.WrapValueInQuotes = false;
-
-            styleIni["DISPLAY"]["Mode"] = styleWindowed;
-            styleIni["SOUND"]["DisableSoundDriver"] = styleBGM;
-            styleIni["GAME"]["BossRush"] = bossRush;
-            styleIni["GAME"]["Arcade"] = arcadeMode;
-            styleIni["INPUT"]["Hotkeys"] = hotKeys;
-            styleIni["DISPLAY"]["DisableBlurShader"] = blurShader;
-            styleIni["DISPLAY"]["DisableFogShader"] = fogShader;
-            styleIni["DISPLAY"]["DisableShadowEngine"] = shadowEngine;
-            styleIni["DISPLAY"]["GammaCorrection"] = gammaCorrection;
-            styleIni["DISPLAY"]["Resolution"] = styleResolution;
-            styleIni["GAME"]["Arcade.Mission"] = arcadeMission;
-            styleIni["GAME"]["Arcade.Style"] = arcadeStyle;
-            styleIni["GAME"]["Arcade.Room"] = arcadeRoom;
-
-            File.WriteAllText(styleLoc, styleIni.ToString().Replace("BGM[]={", "BGM[] = {"));
+            catch
+            {
+                label6.Text = "Failed To Install!";
+                label6.Visible = true;
+            }
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
