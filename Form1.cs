@@ -428,8 +428,8 @@ namespace dmc3music
 
                 if (missionNumber == 2)
                 {
-                    ReadProcessMemory(ProcessHandle, BaseAddress + 0x7EE568, ref vanguardSpawned, sizeof(int), 0);
-                    if (vanguardSpawned == 66)
+                    ReadProcessMemory(ProcessHandle, BaseAddress + 0x5585AC, ref vanguardSpawned, sizeof(int), 0);
+                    if (vanguardSpawned == 770)
                     {
                         roomId = 66;
                     }
