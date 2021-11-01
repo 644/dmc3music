@@ -258,6 +258,7 @@
 	},
 	"TrackRemapping": {},
 	"Shuffle": false,
+	"CutsceneMovement": false,
 	"ShuffleRotation": [
 		"Battle_00",
 		"Battle_0a",

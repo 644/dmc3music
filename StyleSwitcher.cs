@@ -10,6 +10,7 @@ namespace dmc3music
     public partial class StyleSwitcher : Form
     {
         private DMC3MusicConfig Config { get; set; }
+        public bool ConfigChanged { get; set; } = false;
         public string styleWindowed { get; set; } = "0";
         public INIFile styleIni { get; set; }
         public Dictionary<string, string> stylesDict { get; set; } = new Dictionary<string, string>()
@@ -22,7 +23,7 @@ namespace dmc3music
             { "Doppelganger", "5" }
         };
 
-        public string styleLoc, styleBGM, bossRush, hotKeys, blurShader,
+        public string styleLoc, styleBGM, styleSEVol, bossRush, hotKeys, blurShader,
             fogShader, shadowEngine, gammaCorrection,
             arcadeMode, arcadeRoom, arcadeMission, arcadeStyle, arcadeWeapons, styleResolution;
 
@@ -56,11 +57,29 @@ namespace dmc3music
 
         private void getIniConfig()
         {
+            checkBox9.Checked = Config.CutsceneMovement;
+
             styleWindowed = styleIni.GetValue("DISPLAY", "Mode");
             checkBox1.Checked = (styleWindowed == "0") ? true : false;
 
             styleBGM = styleIni.GetValue("SOUND", "DisableSoundDriver");
             checkBox2.Checked = (styleBGM == "1") ? true : false;
+
+            styleSEVol = styleIni.GetValue("SOUND", "Volume.SE");
+
+            float x = Convert.ToSingle(styleSEVol) / 100f;
+            float y;
+            if (x <= 0)
+            {
+                y = 0;
+            }
+            else
+            {
+                float dbVolume = (1 - x) * -48f;
+                y = (float)Math.Pow(10, dbVolume / 20);
+            }
+
+            volumeSlider1.Volume = y;
 
             bossRush = styleIni.GetValue("GAME", "BossRush");
             checkBox3.Checked = (bossRush == "1") ? true : false;
@@ -102,6 +121,8 @@ namespace dmc3music
         {
             try
             {
+                DMC3MusicConfigWriter.WriteConfig(Config);
+
                 string styleDll = Path.Combine(Config.DMC3Path, "StyleSwitcher.dll");
                 if (!File.Exists(styleDll))
                 {
@@ -119,6 +140,25 @@ namespace dmc3music
 
                 styleIni["DISPLAY"]["Mode"] = styleWindowed;
                 styleIni["SOUND"]["DisableSoundDriver"] = styleBGM;
+
+                float db = 20 * (float)Math.Log10(volumeSlider1.Volume);
+                int percent = (int)Math.Round((1 - (db / -48f)) * 100f);
+
+                if (percent <= 0)
+                {
+                    styleSEVol = "0";
+                }
+                else if (percent >= 100)
+                {
+                    styleSEVol = "100";
+                }
+                else
+                {
+                    styleSEVol = percent.ToString();
+                }
+
+                styleIni["SOUND"]["Volume.SE"] = styleSEVol;
+
                 styleIni["GAME"]["BossRush"] = bossRush;
                 styleIni["GAME"]["Arcade"] = arcadeMode;
                 styleIni["INPUT"]["Hotkeys"] = hotKeys;
@@ -134,12 +174,18 @@ namespace dmc3music
                 File.WriteAllText(styleLoc, styleIni.ToString().Replace("BGM[]={", "BGM[] = {"));
                 label6.Text = "Installed Successfully!";
                 label6.Visible = true;
+                ConfigChanged = true;
             }
             catch
             {
                 label6.Text = "Failed To Install!";
                 label6.Visible = true;
             }
+        }
+
+        private void checkBox9_CheckedChanged(object sender, EventArgs e)
+        {
+            Config.CutsceneMovement = checkBox9.Checked;
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
