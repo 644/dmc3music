@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
@@ -13,15 +14,9 @@ namespace dmc3music
 {
     public partial class Form1 : Form
     {
-        private const int PROCESS_WM_READ = 0x0010;
-
-        [DllImport("kernel32.dll")]
-        public static extern IntPtr OpenProcess(int dwDesiredAccess, bool bInheritHandle, int dwProcessId);
-
-        [DllImport("kernel32", SetLastError = true)]
-        public static extern int ReadProcessMemory(IntPtr hProcess, int lpBase, ref int lpBuffer, int nSize, int lpNumberOfBytesRead);
-
         private DMC3MusicConfig Config { get; set; }
+
+        private DMC3Process DMC3 { get; set; }
 
         private Timer SongChangeTimer { get; set; }
 
@@ -31,15 +26,13 @@ namespace dmc3music
 
         private SongPlayer Player { get; set; }
 
-        private Process DMC3Process { get; set; }
-        private IntPtr ProcessHandle { get; set; }
-        private int BaseAddress { get; set; }
-
         private bool ConfigChanged { get; set; }
 
         private bool newTrack { get; set; } = true;
 
         private string outMaxPos { get; set; }
+
+        private KeyboardHook hook { get; set; } = new KeyboardHook();
 
         private void getGamePath()
         {
@@ -132,6 +125,11 @@ namespace dmc3music
             }
             catch { }
 
+/*            hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(hook_KeyPressed);
+            hook.RegisterHotKey(dmc3music.ModifierKeys.Control | dmc3music.ModifierKeys.Alt, Keys.D);
+            hook.RegisterHotKey(dmc3music.ModifierKeys.Control | dmc3music.ModifierKeys.Alt, Keys.G);
+            hook.RegisterHotKey(dmc3music.ModifierKeys.Control | dmc3music.ModifierKeys.Alt, Keys.D0);*/
+
             /*            try
                         {
                             var MusicPath1 = Path.Combine(Config.DMC3Path, "native/sound");
@@ -160,6 +158,38 @@ namespace dmc3music
         }
 
         #region Form Control Methods
+
+        private void hook_KeyPressed(object sender, KeyPressedEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Keys.D:
+                    Process.Start("steam://rungameid/6550");
+                    break;
+                case Keys.G:
+                    using (DMC3Process DMC3RO = new DMC3Process())
+                    {
+                        if (!DMC3RO.OpenReadOnly())
+                        {
+                            return;
+                        }
+                        DMC3RO.Process.Kill();
+                    }
+                    break;
+                case Keys.D0:
+                    using (DMC3Process DMC3RO = new DMC3Process())
+                    {
+                        if (DMC3RO.OpenReadOnly())
+                        {
+                            DMC3RO.Process.Kill();
+                        }
+                    }
+                    Process.Start("steam://rungameid/6550");
+                    break;
+                default:
+                    break;
+            }
+        }
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -254,7 +284,7 @@ namespace dmc3music
             }
             try
             {
-                DMC3Process = Process.GetProcessesByName("dmc3se")[0];
+                DMC3.Process = Process.GetProcessesByName("dmc3se")[0];
             }
             catch
             {
@@ -263,8 +293,9 @@ namespace dmc3music
             }
             try
             {
-                ProcessHandle = OpenProcess(PROCESS_WM_READ, false, DMC3Process.Id);
-                BaseAddress = DMC3Process.MainModule.BaseAddress.ToInt32();
+                DMC3 = new DMC3Process();
+                DMC3.OpenReadOnly();
+                
                 SongChangeTimer = new Timer
                 {
                     Interval = 50
@@ -289,6 +320,7 @@ namespace dmc3music
                 SongChangeTimer.Stop();
                 SongProgressTimer.Stop();
                 Player.Stop();
+                DMC3.Dispose();
                 EnableConfigControls();
             }
             catch
@@ -312,23 +344,96 @@ namespace dmc3music
 
         #region Functionality Methods
 
+        public bool disableMusic { get; set; } = false;
+
         private void GameStart(object sender, EventArgs e)
         {
-            try
+            using(DMC3Process DMC3RO = new DMC3Process())
             {
-                DMC3Process = Process.GetProcessesByName("dmc3se")[0];
+                if (DMC3RO.OpenReadOnly() == false)
+                {
+                    return;
+                }
+
+/*                disableMusic = false;
+                Version latestVers = new Version(1, 3, 0, 0);
+                Version oldVers = new Version(1, 0, 0, 0);
+
+                if(DMC3RO.VersionInfo.CompareTo(latestVers) != 0)
+                {
+                    if (DMC3RO.VersionInfo.CompareTo(oldVers) != 0)
+                    {
+                        return;
+                    }
+                    disableMusic = true;
+                }*/
             }
-            catch
+
+/*            if (disableMusic)
             {
+                using(DMC3Process DMC3RW = new DMC3Process())
+                {
+                    if(DMC3RW.OpenReadWrite() == false)
+                    {
+                        return;
+                    }
+
+                    byte[] nop = new byte[] { 144 };
+                    byte[] ret = new byte[] { 195 };
+
+                    for (int i = 0x3F00; i < 0x3FD3; i++)
+                    {
+                        DMC3RW.WriteMem(nop, i);
+                    }
+
+                    DMC3RW.WriteMem(ret, 0x3FD4);
+                }
+            }*/
+
+/*            using (DMC3Process DMC3RW = new DMC3Process())
+            {
+                if (DMC3RW.OpenReadWrite() == false)
+                {
+                    return;
+                }
+
+                DMC3RW.WriteInt(2560, 0x402840); // 0x402840
+                DMC3RW.WriteInt(1440, 0x402846); // 0x402846
+
+                DMC3RW.WriteInt(2560, 0x409C58); // 0x409C58
+                DMC3RW.WriteInt(1440, 0x409C62); // 0x409C62
+
+                DMC3RW.WriteInt(2560, 0x77E38C); // 0x77E38C
+                DMC3RW.WriteInt(1440, 0x77E390); // 0x77E390
+
+                DMC3RW.WriteExactMem(new byte[] { 0xEB }, 0x402822); // 0x402822
+                DMC3RW.WriteExactMem(new byte[] { 0xC7 }, 0x6CC667); // 0x6CC667
+
+                DMC3RW.WriteExactMem(new byte[] { 0x47 }, 0x6CC668); // 0x6CC668
+                DMC3RW.WriteExactMem(new byte[] { 0x60 }, 0x6CC669); // 0x6CC669
+                DMC3RW.WriteExactMem(new byte[] { 0x00 }, 0x6CC66A); // 0x6CC66A
+                DMC3RW.WriteExactMem(new byte[] { 0x00 }, 0x6CC66B); // 0x6CC66B
+                DMC3RW.WriteExactMem(new byte[] { 0x40 }, 0x6CC66C); // 0x6CC66C
+                DMC3RW.WriteExactMem(new byte[] { 0x3F }, 0x6CC66D); // 0x6CC66D
+
+                DMC3RW.WriteExactMem(new byte[] { 0x70 }, 0x6CC699); // 0x6CC699
+            }*/
+
+            DMC3 = new DMC3Process();
+
+            if(DMC3.OpenReadOnly() == false)
+            {
+                DMC3.Dispose();
                 return;
             }
+
             Player = new SongPlayer(Config);
+
             try
             {
                 GameStartTimer.Stop();
                 DisableConfigControls();
-                ProcessHandle = OpenProcess(PROCESS_WM_READ, false, DMC3Process.Id);
-                BaseAddress = DMC3Process.MainModule.BaseAddress.ToInt32();
+
                 SongChangeTimer = new Timer
                 {
                     Interval = 50
@@ -345,6 +450,7 @@ namespace dmc3music
             }
             catch
             {
+                DMC3.Dispose();
                 MessageBox.Show("Error", "There was a problem opening the DMC3 Process", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -382,27 +488,26 @@ namespace dmc3music
             }
         }
 
+
+
         private void CheckSong(object sender, EventArgs e)
         {
-            try
+            if (DMC3.ProcHasExited)
             {
-                if (Process.GetProcessesByName("dmc3se").Length == 0)
-                {
-                    Player.Stop();
-                    SongChangeTimer.Stop();
-                    SongProgressTimer.Stop();
-                    GameStartTimer.Start();
-                    return;
-                }
+                DMC3.Dispose();
+                Player.Stop();
+                SongChangeTimer.Stop();
+                SongProgressTimer.Stop();
+                GameStartTimer.Start();
+                return;
             }
-            catch { }
 
             try
             {
                 int checkRoom = 0;
-                ReadProcessMemory(ProcessHandle, BaseAddress + 0x20C39EC, ref checkRoom, sizeof(int), 0);
+                checkRoom = DMC3.ReadMem(0x20C39EC);
 
-                if (checkRoom == 0)
+                if (checkRoom <= 0)
                 {
                     if (Player.isPlaying)
                     {
@@ -413,32 +518,46 @@ namespace dmc3music
 
                 int roomId = -1;
                 int enemyCount = -1;
-                int enemyCountPtr1 = -1;
-                int enemyCountPtr2 = -1;
                 int missionNumber = -1;
                 int isLoading = -1;
                 int vanguardSpawned = -1;
 
-                ReadProcessMemory(ProcessHandle, BaseAddress + 0x76B150, ref roomId, sizeof(int), 0);
-                ReadProcessMemory(ProcessHandle, BaseAddress + 0x76B860 + 0xC40 + 0x8, ref enemyCountPtr1, sizeof(int), 0);
-                ReadProcessMemory(ProcessHandle, enemyCountPtr1 + 0x18, ref enemyCountPtr2, sizeof(int), 0);
-                ReadProcessMemory(ProcessHandle, enemyCountPtr2 + 0xA78, ref enemyCount, sizeof(int), 0);
-                ReadProcessMemory(ProcessHandle, BaseAddress + 0x76B148, ref missionNumber, sizeof(int), 0);
-                ReadProcessMemory(ProcessHandle, BaseAddress + 0x205BCB8, ref isLoading, sizeof(int), 0);
+                roomId = DMC3.ReadMem(0x76B150);
+
+                IntPtr tmpPtr = IntPtr.Add(DMC3.BaseAddress, 0x76B860 + 0xC40 + 0x8);
+                int enemyCountPtr1 = DMC3.GetIntPtr(tmpPtr);
+                tmpPtr = IntPtr.Add(new IntPtr(enemyCountPtr1), 0x18);
+                int enemyCountPtr2 = DMC3.GetIntPtr(tmpPtr);
+                tmpPtr = IntPtr.Add(new IntPtr(enemyCountPtr2), 0xA78);
+                enemyCount = DMC3.GetIntPtr(tmpPtr);
+
+                missionNumber = DMC3.ReadMem(0x76B148);
+                isLoading = DMC3.ReadMem(0x205BCB8);
 
                 if (missionNumber == 2)
                 {
-                    ReadProcessMemory(ProcessHandle, BaseAddress + 0x5585AC, ref vanguardSpawned, sizeof(int), 0);
+                    vanguardSpawned = DMC3.ReadMem(0x5585AC);
                     if (vanguardSpawned == 770)
                     {
                         roomId = 66;
                     }
                 }
 
-                Player.PlayRoomSong(roomId, enemyCount, missionNumber);
-                newTrack = true;
+                if (roomId != -1)
+                {
+                    Player.PlayRoomSong(roomId, enemyCount, missionNumber);
+                    newTrack = true;
+                }
             }
-            catch { }
+            catch
+            {
+                DMC3.Dispose();
+                Player.Stop();
+                SongChangeTimer.Stop();
+                SongProgressTimer.Stop();
+                GameStartTimer.Start();
+                return;
+            }
         }
 
         private bool SaveConfigPrompt()
@@ -790,6 +909,28 @@ namespace dmc3music
                 GetMusic MusicForm = new GetMusic();
                 DialogResult result = MusicForm.ShowDialog();
                 MusicForm.Dispose();
+            }
+            catch { }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            if (Directory.Exists(Config.DMC3Path))
+            {
+                Process.Start("explorer.exe", Config.DMC3Path);
+            } else
+            {
+                MessageBox.Show("Couldn't find the path to DMC3. Make sure it's set above.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                HotkeysForm HotkeysFrm = new HotkeysForm();
+                DialogResult result = HotkeysFrm.ShowDialog();
+                HotkeysFrm.Dispose();
             }
             catch { }
         }

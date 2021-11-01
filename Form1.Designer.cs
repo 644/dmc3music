@@ -71,6 +71,8 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.button7 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.tabPage3.SuspendLayout();
@@ -271,6 +273,8 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.button8);
+            this.tabPage2.Controls.Add(this.button7);
             this.tabPage2.Controls.Add(this.button6);
             this.tabPage2.Controls.Add(this.button5);
             this.tabPage2.Controls.Add(this.label9);
@@ -479,6 +483,26 @@
             this.tabControl1.Size = new System.Drawing.Size(245, 273);
             this.tabControl1.TabIndex = 16;
             // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(6, 215);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(93, 23);
+            this.button7.TabIndex = 29;
+            this.button7.Text = "Open Folder";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(7, 186);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(92, 23);
+            this.button8.TabIndex = 30;
+            this.button8.Text = "Hotkeys";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -547,6 +571,8 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button button8;
     }
 }
 

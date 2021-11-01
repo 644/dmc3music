@@ -22,7 +22,7 @@ namespace dmc3music
             { "Doppelganger", "5" }
         };
 
-        public string styleLoc, styleBGM, bossRush, hotKeys, blurShader,
+        public string styleLoc, styleBGM, styleSEVol, bossRush, hotKeys, blurShader,
             fogShader, shadowEngine, gammaCorrection,
             arcadeMode, arcadeRoom, arcadeMission, arcadeStyle, arcadeWeapons, styleResolution;
 
@@ -61,6 +61,22 @@ namespace dmc3music
 
             styleBGM = styleIni.GetValue("SOUND", "DisableSoundDriver");
             checkBox2.Checked = (styleBGM == "1") ? true : false;
+
+            styleSEVol = styleIni.GetValue("SOUND", "Volume.SE");
+
+            float x = Convert.ToSingle(styleSEVol)/100f;
+            float y;
+            if (x <= 0)
+            {
+                y = 0;
+            }
+            else
+            {
+                float dbVolume = (1 - x) * -48f;
+                y = (float)Math.Pow(10, dbVolume / 20);
+            }
+
+            volumeSlider1.Volume = y;
 
             bossRush = styleIni.GetValue("GAME", "BossRush");
             checkBox3.Checked = (bossRush == "1") ? true : false;
@@ -119,6 +135,25 @@ namespace dmc3music
 
                 styleIni["DISPLAY"]["Mode"] = styleWindowed;
                 styleIni["SOUND"]["DisableSoundDriver"] = styleBGM;
+
+                float db = 20 * (float)Math.Log10(volumeSlider1.Volume);
+                int percent = (int)Math.Round((1 - (db / -48f)) * 100f);
+
+                if(percent <= 0)
+                {
+                    styleSEVol = "0";
+                }
+                else if (percent >= 100)
+                {
+                    styleSEVol = "100";
+                }
+                else
+                {
+                    styleSEVol = percent.ToString();
+                }
+
+                styleIni["SOUND"]["Volume.SE"] = styleSEVol;
+                
                 styleIni["GAME"]["BossRush"] = bossRush;
                 styleIni["GAME"]["Arcade"] = arcadeMode;
                 styleIni["INPUT"]["Hotkeys"] = hotKeys;
