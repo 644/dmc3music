@@ -53,14 +53,13 @@
             this.button2 = new System.Windows.Forms.Button();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.button7 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
-            this.label9 = new System.Windows.Forms.Label();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.button4 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.button1 = new System.Windows.Forms.Button();
@@ -71,8 +70,6 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.button7 = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.tabPage3.SuspendLayout();
@@ -273,16 +270,13 @@
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.button8);
             this.tabPage2.Controls.Add(this.button7);
             this.tabPage2.Controls.Add(this.button6);
             this.tabPage2.Controls.Add(this.button5);
-            this.tabPage2.Controls.Add(this.label9);
             this.tabPage2.Controls.Add(this.checkBox2);
             this.tabPage2.Controls.Add(this.button4);
             this.tabPage2.Controls.Add(this.button9);
             this.tabPage2.Controls.Add(this.label8);
-            this.tabPage2.Controls.Add(this.label7);
             this.tabPage2.Controls.Add(this.label6);
             this.tabPage2.Controls.Add(this.comboBox1);
             this.tabPage2.Controls.Add(this.button1);
@@ -294,6 +288,16 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Options";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(6, 215);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(93, 23);
+            this.button7.TabIndex = 29;
+            this.button7.Text = "Open Folder";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // button6
             // 
@@ -314,14 +318,6 @@
             this.button5.Text = "Check Updates";
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(3, 151);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(0, 13);
-            this.label9.TabIndex = 26;
             // 
             // checkBox2
             // 
@@ -362,14 +358,6 @@
             this.label8.Size = new System.Drawing.Size(62, 13);
             this.label8.TabIndex = 5;
             this.label8.Text = "DMC3 Path";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(8, 84);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(0, 13);
-            this.label7.TabIndex = 4;
             // 
             // label6
             // 
@@ -483,26 +471,6 @@
             this.tabControl1.Size = new System.Drawing.Size(245, 273);
             this.tabControl1.TabIndex = 16;
             // 
-            // button7
-            // 
-            this.button7.Location = new System.Drawing.Point(6, 215);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(93, 23);
-            this.button7.TabIndex = 29;
-            this.button7.Text = "Open Folder";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
-            // 
-            // button8
-            // 
-            this.button8.Location = new System.Drawing.Point(7, 186);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(92, 23);
-            this.button8.TabIndex = 30;
-            this.button8.Text = "Hotkeys";
-            this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -547,7 +515,6 @@
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Button button1;
@@ -568,11 +535,9 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button7;
-        private System.Windows.Forms.Button button8;
     }
 }
 

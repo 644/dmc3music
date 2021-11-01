@@ -76,7 +76,7 @@ namespace dmc3music
                 string readRecv = ReadableSize(e.BytesReceived);
                 string maxRecv = ReadableSize(e.TotalBytesToReceive);
 
-                label1.Text = $"Downloaded {readRecv} of {maxRecv} ({e.ProgressPercentage}%)";
+                label1.Text = $"Downloading {readRecv} of {maxRecv} ({e.ProgressPercentage}%)";
                 RecenterLabel1();
                 progressBar1.Value = e.ProgressPercentage;
             }

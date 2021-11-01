@@ -12,6 +12,7 @@ namespace dmc3music
         public Dictionary<string, List<string>> RoomTracks { get; set; }
         public Dictionary<string, List<string>> AmbientTracks { get; set; }
         public bool Shuffle { get; set; }
+        public bool CutsceneMovement { get; set; }
         public List<string> ShuffleRotation { get; set; }
         public int BattleTimer { get; set; }
         public int AmbientTimer { get; set; }

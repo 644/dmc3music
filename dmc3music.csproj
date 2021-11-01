@@ -219,13 +219,6 @@
     <Compile Include="GetMusic.Designer.cs">
       <DependentUpon>GetMusic.cs</DependentUpon>
     </Compile>
-    <Compile Include="HotkeysForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="HotkeysForm.Designer.cs">
-      <DependentUpon>HotkeysForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="KeyboardHook.cs" />
     <Compile Include="MessageForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -260,9 +253,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GetMusic.resx">
       <DependentUpon>GetMusic.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="HotkeysForm.resx">
-      <DependentUpon>HotkeysForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MessageForm.resx">
       <DependentUpon>MessageForm.cs</DependentUpon>
@@ -354,6 +344,17 @@
     <Content Include="styleswitcher\dinput8.dll" />
     <Content Include="styleswitcher\StyleSwitcher.dll" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -31,7 +31,7 @@ namespace dmc3music
             {
                 await CheckGitHubNewerVersion();
             }
-            catch (Exception err)
+            catch
             {
                 label1.Text = "Could not check for updates";
             }

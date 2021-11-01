@@ -49,6 +49,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.volumeSlider1 = new NAudio.Gui.VolumeSlider();
             this.label2 = new System.Windows.Forms.Label();
+            this.checkBox9 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // checkBox1
@@ -307,11 +308,23 @@
             this.label2.TabIndex = 26;
             this.label2.Text = "Game Volume";
             // 
+            // checkBox9
+            // 
+            this.checkBox9.AutoSize = true;
+            this.checkBox9.Location = new System.Drawing.Point(136, 67);
+            this.checkBox9.Name = "checkBox9";
+            this.checkBox9.Size = new System.Drawing.Size(160, 17);
+            this.checkBox9.TabIndex = 27;
+            this.checkBox9.Text = "Enable Cutscene Movement";
+            this.checkBox9.UseVisualStyleBackColor = true;
+            this.checkBox9.CheckedChanged += new System.EventHandler(this.checkBox9_CheckedChanged);
+            // 
             // StyleSwitcher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(398, 450);
+            this.Controls.Add(this.checkBox9);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.volumeSlider1);
             this.Controls.Add(this.label6);
@@ -362,5 +375,6 @@
         private System.Windows.Forms.Label label6;
         private NAudio.Gui.VolumeSlider volumeSlider1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.CheckBox checkBox9;
     }
 }

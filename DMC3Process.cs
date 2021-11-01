@@ -1,11 +1,7 @@
 ﻿using Microsoft.Win32.SafeHandles;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace dmc3music
 {
@@ -61,7 +57,7 @@ namespace dmc3music
             Process = localProcess[0];
             Handle = OpenProcess(ProcessAccessFlags.VMRead, false, Process.Id);
 
-            if(Handle == UIntPtr.Zero)
+            if (Handle == UIntPtr.Zero)
             {
                 return false;
             }
@@ -135,7 +131,8 @@ namespace dmc3music
 
         public void WriteExactMem(byte[] bytes, int address)
         {
-            WriteProcessMemory(Handle, new IntPtr(address), bytes, (uint)bytes.LongLength, out _);
+            WriteProcessMemory(Handle, new IntPtr(address), bytes, (uint)bytes.LongLength, out int bytesWritten);
+            Console.WriteLine(bytesWritten);
         }
 
         public int ReadExactMem(int address)

@@ -10,6 +10,7 @@ namespace dmc3music
     public partial class StyleSwitcher : Form
     {
         private DMC3MusicConfig Config { get; set; }
+        public bool ConfigChanged { get; set; } = false;
         public string styleWindowed { get; set; } = "0";
         public INIFile styleIni { get; set; }
         public Dictionary<string, string> stylesDict { get; set; } = new Dictionary<string, string>()
@@ -56,6 +57,8 @@ namespace dmc3music
 
         private void getIniConfig()
         {
+            checkBox9.Checked = Config.CutsceneMovement;
+
             styleWindowed = styleIni.GetValue("DISPLAY", "Mode");
             checkBox1.Checked = (styleWindowed == "0") ? true : false;
 
@@ -64,7 +67,7 @@ namespace dmc3music
 
             styleSEVol = styleIni.GetValue("SOUND", "Volume.SE");
 
-            float x = Convert.ToSingle(styleSEVol)/100f;
+            float x = Convert.ToSingle(styleSEVol) / 100f;
             float y;
             if (x <= 0)
             {
@@ -118,6 +121,8 @@ namespace dmc3music
         {
             try
             {
+                DMC3MusicConfigWriter.WriteConfig(Config);
+
                 string styleDll = Path.Combine(Config.DMC3Path, "StyleSwitcher.dll");
                 if (!File.Exists(styleDll))
                 {
@@ -139,7 +144,7 @@ namespace dmc3music
                 float db = 20 * (float)Math.Log10(volumeSlider1.Volume);
                 int percent = (int)Math.Round((1 - (db / -48f)) * 100f);
 
-                if(percent <= 0)
+                if (percent <= 0)
                 {
                     styleSEVol = "0";
                 }
@@ -153,7 +158,7 @@ namespace dmc3music
                 }
 
                 styleIni["SOUND"]["Volume.SE"] = styleSEVol;
-                
+
                 styleIni["GAME"]["BossRush"] = bossRush;
                 styleIni["GAME"]["Arcade"] = arcadeMode;
                 styleIni["INPUT"]["Hotkeys"] = hotKeys;
@@ -169,12 +174,18 @@ namespace dmc3music
                 File.WriteAllText(styleLoc, styleIni.ToString().Replace("BGM[]={", "BGM[] = {"));
                 label6.Text = "Installed Successfully!";
                 label6.Visible = true;
+                ConfigChanged = true;
             }
             catch
             {
                 label6.Text = "Failed To Install!";
                 label6.Visible = true;
             }
+        }
+
+        private void checkBox9_CheckedChanged(object sender, EventArgs e)
+        {
+            Config.CutsceneMovement = checkBox9.Checked;
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
